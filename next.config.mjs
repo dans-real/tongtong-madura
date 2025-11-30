@@ -1,10 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "export",        // <– WAJIB untuk GitHub Pages
+  output: "export",
   images: {
-    unoptimized: true,     // karena GitHub Pages hanya static file
+    unoptimized: true,
   },
-  // ganti "tongtong-madura" dengan nama repo GitHub kamu
+  // NAMA REPO di GitHub
   basePath: "/tongtong-madura",
   assetPrefix: "/tongtong-madura/",
 };

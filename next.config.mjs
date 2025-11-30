@@ -6,8 +6,8 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  // Kalau dev (npm run dev) → tanpa basePath
-  // Kalau di-build (GitHub Pages) → pakai nama repo
+  // Saat dev (npm run dev) => tanpa basePath
+  // Saat production (npm run build, di GitHub Pages) => pakai nama repo
   basePath: isProd ? "/tongtong-madura" : "",
   assetPrefix: isProd ? "/tongtong-madura/" : "",
 };

@@ -1,38 +1,123 @@
-import MapMadura from "@/components/MapMadura";
-import { regions } from "@/data/regions";
-import RegionCard from "@/components/RegionCard";
-import type { Metadata } from "next";
+"use client";
 
-export const metadata: Metadata = {
-    title: "Interactive Map | Tong-Tong Madura",
-    description: "Explore Tong-Tong traditions across different regions of Madura: Bangkalan, Sampang, Pamekasan, and Sumenep.",
-    openGraph: {
-        title: "Interactive Map | Tong-Tong Madura",
-        description: "Discover how each region of Madura keeps the Tong-Tong tradition alive",
-    },
-};
+import { useState, useEffect } from "react";
+import MapMadura from "@/components/MapMadura";
+import { db } from "@/lib/firebase";
+import { collection, query, onSnapshot, orderBy } from "firebase/firestore";
+import Image from "next/image";
+
+interface ExploreContent {
+    id: string;
+    title: string;
+    informasi: string;
+    referensi: string;
+    imageUrl?: string;
+    createdAt?: any;
+}
 
 export default function PetaPage() {
+    const [contents, setContents] = useState<ExploreContent[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    // Load from Firestore
+    useEffect(() => {
+        try {
+            const q = query(collection(db, 'explore'), orderBy('createdAt', 'desc'));
+            const unsubscribe = onSnapshot(q, (snapshot) => {
+                const data = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                } as ExploreContent));
+                setContents(data);
+                setLoading(false);
+            }, (error) => {
+                console.log('Firebase not configured');
+                setLoading(false);
+            });
+
+            return () => unsubscribe();
+        } catch (error) {
+            console.log('Firebase not configured');
+            setLoading(false);
+        }
+    }, []);
+
     return (
         <div className="space-y-6">
             <header className="space-y-2">
-                <h1 className="text-2xl font-semibold">Tong-Tong Map of Madura</h1>
-                <p className="text-sm text-slate-200">
-                    Click a pin on the map or choose a region from the list to learn how
-                    each community keeps the tong-tong tradition alive.
+                <h1 className="text-2xl font-semibold text-white">Peta Madura - Tong-Tong</h1>
+                <p className="text-sm text-redBrown-200">
+                    Tradisi Tong-Tong hidup di seluruh penjuru Pulau Madura dengan keunikan masing-masing wilayah.
                 </p>
             </header>
 
             <MapMadura />
 
-            <section className="space-y-3">
-                <h2 className="text-base font-semibold">Regions</h2>
-                <div className="grid md:grid-cols-2 gap-3">
-                    {regions.map((r) => (
-                        <RegionCard key={r.slug} region={r} />
-                    ))}
+            {loading ? (
+                <div className="text-center py-12">
+                    <div className="text-white">Loading konten...</div>
                 </div>
-            </section>
+            ) : contents.length > 0 ? (
+                <section className="space-y-6 max-w-4xl mx-auto">
+                    {contents.map((content) => (
+                        <div key={content.id} className="rounded-3xl border-2 border-redBrown-700/50 bg-linear-to-br from-redBrown-900/80 to-redBrown-800/60 p-6 md:p-8 space-y-6 shadow-2xl shadow-redBrown-950/50">
+                            {/* Header */}
+                            <div className="space-y-2">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-3 h-3 rounded-full bg-white animate-pulse-slow shadow-sm shadow-white" />
+                                    <h3 className="text-2xl md:text-3xl font-bold text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]">
+                                        {content.title}
+                                    </h3>
+                                </div>
+                            </div>
+
+                            {/* Image (if exists) */}
+                            {content.imageUrl && (
+                                <div className="relative w-full h-64 md:h-80 rounded-xl overflow-hidden border-2 border-redBrown-600/50">
+                                    <Image
+                                        src={content.imageUrl}
+                                        alt={content.title}
+                                        fill
+                                        className="object-cover"
+                                        sizes="(max-width: 768px) 100vw, 896px"
+                                    />
+                                </div>
+                            )}
+
+                            {/* Informasi */}
+                            <div className="space-y-2">
+                                <h4 className="text-sm font-bold text-redBrown-300 uppercase tracking-wider flex items-center gap-2">
+                                    <span className="text-base">📖</span>
+                                    <span>Informasi</span>
+                                </h4>
+                                <div className="text-sm text-redBrown-100 leading-relaxed whitespace-pre-line">
+                                    {content.informasi}
+                                </div>
+                            </div>
+
+                            {/* Referensi */}
+                            <div className="space-y-2 pt-4 border-t border-redBrown-700">
+                                <h4 className="text-sm font-bold text-redBrown-400 uppercase tracking-wider flex items-center gap-2">
+                                    <span className="text-base">📚</span>
+                                    <span>Referensi</span>
+                                </h4>
+                                <div className="text-xs text-redBrown-200 leading-relaxed whitespace-pre-line">
+                                    {content.referensi}
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </section>
+            ) : (
+                <div className="text-center py-12">
+                    <div className="space-y-3">
+                        <div className="text-5xl">📝</div>
+                        <p className="text-redBrown-300">
+                            Konten belum tersedia. Admin belum mengisi informasi Explore.
+                        </p>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

@@ -68,25 +68,34 @@ tongtong-madura/
 
 - Node.js 20.x atau lebih baru
 - npm, yarn, pnpm, atau bun
+- Firebase account (untuk admin dashboard)
 
 ### Setup
 
 1. **Clone repository**
    ```bash
-   git clone https://github.com/glennn-droid/tongtong-madura.git
+   git clone https://github.com/dans-real/tongtong-madura.git
    cd tongtong-madura
    ```
 
 2. **Install dependencies**
    ```bash
    npm install
-   # or
-   yarn install
-   # or
-   pnpm install
    ```
 
-3. **Run development server**
+3. **Setup Firebase (Optional - untuk admin dashboard)**
+   
+   Buat file `.env.local` di root project:
+   ```env
+   NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
+   NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+   NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+   NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+   NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+   NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
+   ```
+
+4. **Run development server**
    ```bash
    npm run dev
    ```
@@ -95,21 +104,90 @@ tongtong-madura/
 
 ### Build & Deployment
 
-**Build for production:**
-```bash
-npm run build
-```
+#### Option 1: Auto Deploy dengan GitHub Actions (Recommended)
 
-**Deploy to GitHub Pages:**
-```bash
-npm run build
-# Kemudian commit dan push folder 'docs' ke repository
-git add docs
-git commit -m "Deploy to GitHub Pages"
-git push
-```
+1. **Setup GitHub Secrets**
+   - Buka repository di GitHub → Settings → Secrets and variables → Actions
+   - Tambahkan secrets berikut:
+     - `NEXT_PUBLIC_FIREBASE_API_KEY`
+     - `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`
+     - `NEXT_PUBLIC_FIREBASE_PROJECT_ID`
+     - `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`
+     - `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID`
+     - `NEXT_PUBLIC_FIREBASE_APP_ID`
+
+2. **Enable GitHub Pages**
+   - Buka Settings → Pages
+   - Source: **GitHub Actions**
+
+3. **Push ke main branch**
+   ```bash
+   git add .
+   git commit -m "Deploy to GitHub Pages"
+   git push origin main
+   ```
+
+   GitHub Actions akan otomatis build dan deploy ke: `https://dans-real.github.io/tongtong-madura`
+
+#### Option 2: Manual Deploy
+
+1. **Build for production:**
+   ```bash
+   npm run build
+   ```
+
+2. **Output akan ada di folder `out/`**
+
+3. **Deploy ke GitHub Pages:**
+   - Buka Settings → Pages
+   - Source: Deploy from a branch
+   - Branch: main, folder: /docs (atau copy isi `out/` ke folder `docs/`)
 
 Website akan tersedia di: `https://[username].github.io/tongtong-madura`
+
+### Struktur Data Firebase
+
+#### Collections:
+- **gallery**: Foto-foto galeri
+  ```typescript
+  {
+    imageUrl: string,
+    title: string,
+    caption: string,
+    tags: string[],
+    createdAt: timestamp
+  }
+  ```
+
+- **explore**: Artikel konten explore
+  ```typescript
+  {
+    title: string,
+    informasi: string,
+    referensi: string,
+    imageUrl?: string,
+    createdAt: timestamp
+  }
+  ```
+
+- **quizzes**: Data quiz
+  ```typescript
+  {
+    slug: string,
+    title: string,
+    level: 'basic' | 'medium' | 'advanced',
+    description?: string,
+    questions: [
+      {
+        question: string,
+        options: [
+          { text: string, isCorrect: boolean }
+        ]
+      }
+    ],
+    createdAt: timestamp
+  }
+  ```
 
 ## 🎨 Customization
 
@@ -173,8 +251,8 @@ Project ini dibuat untuk tujuan edukasi dan pelestarian budaya.
 
 ## 👨‍💻 Author
 
-**Glenn**
-- GitHub: [@glennn-droid](https://github.com/glennn-droid)
+**Dans Real**
+- GitHub: [@dans-real](https://github.com/dans-real)
 
 ## 🙏 Acknowledgments
 

@@ -42,9 +42,9 @@ export default function RootLayout({
 }) {
     return (
         <html lang="id">
-            <body className="min-h-screen flex flex-col bg-slate-950 text-slate-50">
-                <div className="fixed inset-0 -z-10 bg-linear-to-br from-slate-950 via-slate-900 to-slate-950" />
-                <div className="fixed -z-10 inset-0 opacity-40 pointer-events-none bg-[radial-gradient(circle_at_top,#b91c1c40,transparent_55%),radial-gradient(circle_at_bottom,#f9731640,transparent_55%)]" />
+            <body className="min-h-screen flex flex-col bg-redBrown-900 text-redBrown-50">
+                <div className="fixed inset-0 -z-10 bg-linear-to-br from-redBrown-900 via-redBrown-800 to-redBrown-950" />
+                <div className="fixed -z-10 inset-0 opacity-20 pointer-events-none bg-[radial-gradient(circle_at_top,#dc262660,transparent_50%),radial-gradient(circle_at_bottom_right,#7f2d1f60,transparent_50%)]" />
                 <Navbar />
                 <main className="flex-1 max-w-6xl w-full mx-auto px-4 py-6">
                     {children}

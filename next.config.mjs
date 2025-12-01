@@ -11,6 +11,9 @@ const nextConfig = {
   basePath: isProd ? "/tongtong-madura" : "",
   assetPrefix: isProd ? "/tongtong-madura/" : "",
 
+  // Skip trailing slash untuk compatibility
+  trailingSlash: true,
+
   // Enable React Compiler
   reactCompiler: true,
 

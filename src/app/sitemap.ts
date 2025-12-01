@@ -1,32 +1,17 @@
 import type { MetadataRoute } from "next";
-import { materials } from "@/data/materials";
-import { quizzes } from "@/data/quizzes";
-import { regions } from "@/data/regions";
 
 export const dynamic = "force-static";
 
-const baseUrl = "https://glennn-droid.github.io/tongtong-madura";
+const baseUrl = "https://dans-real.github.io/tongtong-madura";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-    // Static pages
+    // Static pages only - dynamic routes loaded from Firebase
     const staticPages = [
         {
             url: baseUrl,
             lastModified: new Date(),
             changeFrequency: "monthly" as const,
             priority: 1,
-        },
-        {
-            url: `${baseUrl}/materi`,
-            lastModified: new Date(),
-            changeFrequency: "weekly" as const,
-            priority: 0.8,
-        },
-        {
-            url: `${baseUrl}/quiz`,
-            lastModified: new Date(),
-            changeFrequency: "weekly" as const,
-            priority: 0.8,
         },
         {
             url: `${baseUrl}/peta`,
@@ -36,29 +21,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
         },
     ];
 
-    // Material pages
-    const materialPages = materials.map((material) => ({
-        url: `${baseUrl}/materi/${material.slug}`,
-        lastModified: new Date(),
-        changeFrequency: "monthly" as const,
-        priority: 0.7,
-    }));
-
-    // Quiz pages
-    const quizPages = quizzes.map((quiz) => ({
-        url: `${baseUrl}/quiz/${quiz.slug}`,
-        lastModified: new Date(),
-        changeFrequency: "monthly" as const,
-        priority: 0.6,
-    }));
-
-    // Region pages
-    const regionPages = regions.map((region) => ({
-        url: `${baseUrl}/daerah/${region.slug}`,
-        lastModified: new Date(),
-        changeFrequency: "monthly" as const,
-        priority: 0.7,
-    }));
-
-    return [...staticPages, ...materialPages, ...quizPages, ...regionPages];
+    return staticPages;
 }

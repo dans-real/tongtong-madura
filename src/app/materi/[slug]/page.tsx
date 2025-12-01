@@ -2,11 +2,38 @@ import { getMaterialBySlug, materials } from "@/data/materials";
 import { quizzes } from "@/data/quizzes";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
+import MaterialTracker from "./MaterialTracker";
 
 export async function generateStaticParams() {
     return materials.map((m) => ({
         slug: m.slug,
     }));
+}
+
+export async function generateMetadata({
+    params,
+}: {
+    params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+    const { slug } = await params;
+    const material = getMaterialBySlug(slug);
+
+    if (!material) {
+        return {
+            title: "Material Not Found",
+        };
+    }
+
+    return {
+        title: `${material.title} | Tong-Tong Madura`,
+        description: material.excerpt,
+        openGraph: {
+            title: material.title,
+            description: material.excerpt,
+            type: "article",
+        },
+    };
 }
 
 export default async function MaterialDetailPage({
@@ -27,6 +54,7 @@ export default async function MaterialDetailPage({
 
     return (
         <article className="space-y-5">
+            <MaterialTracker slug={material.slug} category={material.category} />
             <header className="space-y-2">
                 <p className="text-[11px] uppercase tracking-[0.25em] text-maduraGold">
                     Material

@@ -1,6 +1,16 @@
 import MapMadura from "@/components/MapMadura";
 import { regions } from "@/data/regions";
 import RegionCard from "@/components/RegionCard";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Interactive Map | Tong-Tong Madura",
+    description: "Explore Tong-Tong traditions across different regions of Madura: Bangkalan, Sampang, Pamekasan, and Sumenep.",
+    openGraph: {
+        title: "Interactive Map | Tong-Tong Madura",
+        description: "Discover how each region of Madura keeps the Tong-Tong tradition alive",
+    },
+};
 
 export default function PetaPage() {
     return (

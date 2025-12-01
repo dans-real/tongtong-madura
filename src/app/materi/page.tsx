@@ -1,5 +1,15 @@
 import { materials } from "@/data/materials";
 import MaterialCard from "@/components/MaterialCard";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Learning Materials | Tong-Tong Madura",
+    description: "Short, visual-friendly explanations about the history, instruments, rhythms, and social roles of tong-tong.",
+    openGraph: {
+        title: "Learning Materials | Tong-Tong Madura",
+        description: "Explore the rich history and cultural significance of Tong-Tong in Madura",
+    },
+};
 
 export default function MateriPage() {
     return (

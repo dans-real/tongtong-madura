@@ -1,6 +1,6 @@
 export default function Footer() {
     return (
-        <footer className="border-t border-slate-800 mt-8">
+        <footer className="border-t border-slate-800 mt-8" role="contentinfo">
             <div className="max-w-6xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-2 text-[11px] text-slate-400">
                 <span>© {new Date().getFullYear()} Tong-Tong Madura Hub</span>
                 <span className="text-slate-500">

@@ -1,10 +1,37 @@
 import { getRegionBySlug, regions } from "@/data/regions";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
+import RegionTracker from "./RegionTracker";
 
 export async function generateStaticParams() {
     return regions.map((region) => ({
         slug: region.slug,
     }));
+}
+
+export async function generateMetadata({
+    params,
+}: {
+    params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+    const { slug } = await params;
+    const region = getRegionBySlug(slug);
+
+    if (!region) {
+        return {
+            title: "Region Not Found",
+        };
+    }
+
+    return {
+        title: `Tong-Tong ${region.name} | Madura Culture`,
+        description: region.shortDescription,
+        openGraph: {
+            title: `Tong-Tong ${region.name}`,
+            description: region.shortDescription,
+            type: "website",
+        },
+    };
 }
 
 export default async function RegionDetailPage({
@@ -21,6 +48,7 @@ export default async function RegionDetailPage({
 
     return (
         <div className="space-y-5">
+            <RegionTracker slug={region.slug} />
             <header className="space-y-1">
                 <p className="text-[11px] uppercase tracking-[0.25em] text-maduraGold">
                     Tong-Tong Region

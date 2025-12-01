@@ -15,12 +15,13 @@ export default function MapMadura() {
     const router = useRouter();
 
     return (
-        <div className="relative w-full aspect-[16/9] rounded-3xl border border-slate-900 overflow-hidden shadow-soft-card">
+        <div className="relative w-full aspect-video rounded-3xl border border-slate-900 overflow-hidden shadow-soft-card">
             {/* Foto map Madura */}
             <Image
                 src="/madura-map.png"
-                alt="Map of Madura"
+                alt="Map of Madura showing Bangkalan, Sampang, Pamekasan, and Sumenep regions"
                 fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 600px"
                 className="object-cover"
                 priority
             />
@@ -42,7 +43,8 @@ export default function MapMadura() {
                         key={region.slug}
                         style={{ top: pos.top, left: pos.left }}
                         onClick={() => router.push(`/daerah/${region.slug}`)}
-                        className="absolute -translate-x-1/2 -translate-y-1/2 group focus:outline-none"
+                        className="absolute -translate-x-1/2 -translate-y-1/2 group focus:outline-none focus:ring-2 focus:ring-maduraGold focus:ring-offset-2 focus:ring-offset-slate-950 rounded-full"
+                        aria-label={`Explore Tong-Tong culture in ${region.name}`}
                     >
                         <div className="w-4 h-4 rounded-full bg-maduraGold shadow-[0_0_18px_#fbbf24] group-hover:scale-125 transition-transform" />
                         <div className="mt-1 px-2 py-1 rounded-full bg-slate-950/90 border border-slate-700 text-[10px] text-slate-100 whitespace-nowrap group-hover:border-maduraGold">

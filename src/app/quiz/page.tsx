@@ -1,5 +1,15 @@
 import { quizzes } from "@/data/quizzes";
 import QuizCard from "@/components/QuizCard";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Interactive Quizzes | Tong-Tong Madura",
+    description: "Test your knowledge about tong-tong history, instruments, and rhythms. Learn by playing, not only by reading.",
+    openGraph: {
+        title: "Interactive Quizzes | Tong-Tong Madura",
+        description: "Test your knowledge about Madura's traditional Tong-Tong culture",
+    },
+};
 
 export default function QuizPage() {
     return (

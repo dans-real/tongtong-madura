@@ -9,9 +9,9 @@ const navItems = [
 export default function Navbar() {
     return (
         <header className="border-b border-slate-800 bg-slate-950/70 backdrop-blur sticky top-0 z-40">
-            <nav className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-                <Link href="/" className="flex items-center gap-2 group">
-                    <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-maduraRed to-maduraSoft flex items-center justify-center text-xs font-bold shadow-soft-card">
+            <nav className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between" aria-label="Main navigation">
+                <Link href="/" className="flex items-center gap-2 group" aria-label="Tong-Tong Madura home">
+                    <div className="w-8 h-8 rounded-xl bg-linear-to-br from-maduraRed to-maduraSoft flex items-center justify-center text-xs font-bold shadow-soft-card">
                         TT
                     </div>
                     <div className="flex flex-col leading-tight">

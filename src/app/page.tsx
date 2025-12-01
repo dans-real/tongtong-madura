@@ -1,9 +1,9 @@
 import Link from "next/link";
-import MapMadura from "@/components/MapMadura";
 import { materials } from "@/data/materials";
 import { quizzes } from "@/data/quizzes";
 import MaterialCard from "@/components/MaterialCard";
 import QuizCard from "@/components/QuizCard";
+import MapMadura from "@/components/MapMadura";
 
 export default function HomePage() {
     return (

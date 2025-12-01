@@ -10,6 +10,18 @@ const nextConfig = {
   // Saat production (npm run build, di GitHub Pages) => pakai nama repo
   basePath: isProd ? "/tongtong-madura" : "",
   assetPrefix: isProd ? "/tongtong-madura/" : "",
+
+  // Enable React Compiler
+  reactCompiler: true,
+
+  // Strict mode untuk development
+  reactStrictMode: true,
+
+  // Compress
+  compress: true,
+
+  // Power optimizations
+  poweredByHeader: false,
 };
 
 export default nextConfig;

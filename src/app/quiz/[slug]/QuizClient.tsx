@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { Quiz } from "@/data/quizzes";
+import { analytics } from "@/lib/analytics";
 
 export default function QuizClient({ quiz }: { quiz: Quiz }) {
     const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -24,7 +25,11 @@ export default function QuizClient({ quiz }: { quiz: Quiz }) {
     }
 
     function handleSubmit() {
-        if (!submitted) setSubmitted(true);
+        if (!submitted) {
+            setSubmitted(true);
+            // Track quiz completion
+            analytics.quizCompleted(quiz.slug, score);
+        }
     }
 
     function handleReset() {

@@ -1,2 +1,2 @@
-:HL["/tongtong-madura/_next/static/chunks/1882737506ff10dd.css","style"]
-0:{"buildId":"vn7K0bzvpL3FcMkm2ZCII","tree":{"name":"","paramType":null,"paramKey":"","hasRuntimePrefetch":false,"slots":{"children":{"name":"__PAGE__","paramType":null,"paramKey":"__PAGE__","hasRuntimePrefetch":false,"slots":null,"isRootLayout":false}},"isRootLayout":true},"staleTime":300}
+:HL["/tongtong-madura/_next/static/chunks/eaff7dcf2a2882b2.css","style"]
+0:{"buildId":"UkCh6qdnOhUYavVNp8sUK","tree":{"name":"","paramType":null,"paramKey":"","hasRuntimePrefetch":false,"slots":{"children":{"name":"__PAGE__","paramType":null,"paramKey":"__PAGE__","hasRuntimePrefetch":false,"slots":null,"isRootLayout":false}},"isRootLayout":true},"staleTime":300}

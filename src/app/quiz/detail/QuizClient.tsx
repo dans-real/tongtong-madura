@@ -139,8 +139,8 @@ export default function QuizClient({ quiz }: { quiz: Quiz }) {
                                 key={option.id}
                                 onClick={() => handleSelectAnswer(option.id)}
                                 className={`w-full text-left p-4 rounded-lg border-2 transition-all ${selectedAnswers[currentQuestion] === option.id
-                                        ? 'bg-amber-500/20 border-amber-500 text-white'
-                                        : 'bg-redBrown-800 border-redBrown-600 text-redBrown-200 hover:border-amber-500/50'
+                                    ? 'bg-amber-500/20 border-amber-500 text-white'
+                                    : 'bg-redBrown-800 border-redBrown-600 text-redBrown-200 hover:border-amber-500/50'
                                     }`}
                             >
                                 {option.text}

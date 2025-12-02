@@ -207,61 +207,68 @@ export default function GallerySection() {
                 </div>
             )}
 
-            {/* Lightbox Modal - Simple zoom dengan download button */}
+            {/* Lightbox Modal - Scrollable dengan ukuran asli gambar */}
             {lightboxOpen && selectedImage && (
                 <div
-                    className="fixed inset-0 z-50 bg-black/97 flex items-center justify-center p-4 animate-fadeIn"
+                    className="fixed inset-0 z-50 bg-black/97 overflow-y-auto animate-fadeIn"
                     onClick={() => setLightboxOpen(false)}
                 >
-                    {/* Close Button */}
-                    <button
-                        onClick={() => setLightboxOpen(false)}
-                        className="absolute top-6 right-6 text-white/80 text-3xl hover:text-white transition-colors z-10 w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10"
-                        aria-label="Close"
-                    >
-                        ✕
-                    </button>
-
-                    {/* Download Button - Floating */}
-                    {useFirebase && selectedImage.imageUrl && (
+                    {/* Floating Controls - Fixed position */}
+                    <div className="fixed top-6 right-6 flex gap-3 z-20">
+                        {/* Download Button */}
+                        {useFirebase && selectedImage.imageUrl && (
+                            <button
+                                onClick={handleDownload}
+                                className="text-white/80 hover:text-white transition-all w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 backdrop-blur-sm"
+                                aria-label="Download"
+                                title="Download gambar"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                            </button>
+                        )}
+                        
+                        {/* Close Button */}
                         <button
-                            onClick={handleDownload}
-                            className="absolute top-6 right-20 text-white/80 hover:text-white transition-all z-10 w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10"
-                            aria-label="Download"
-                            title="Download gambar"
+                            onClick={() => setLightboxOpen(false)}
+                            className="text-white/80 hover:text-white transition-colors w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 backdrop-blur-sm text-2xl"
+                            aria-label="Close"
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                            </svg>
+                            ✕
                         </button>
-                    )}
+                    </div>
 
-                    {/* Zoomed Image */}
-                    <div
-                        className="relative max-w-[90vw] max-h-[90vh] flex items-center justify-center"
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        {useFirebase && selectedImage.imageUrl ? (
-                            <img
-                                src={selectedImage.imageUrl}
-                                alt={selectedImage.title || selectedImage.caption}
-                                className="max-w-full max-h-[90vh] w-auto h-auto object-contain rounded-lg shadow-2xl"
-                            />
-                        ) : (
-                            <div className="w-96 h-96 bg-linear-to-br from-redBrown-800/80 via-redBrown-900/80 to-redBrown-950/80 flex items-center justify-center rounded-lg">
-                                <span className="text-9xl opacity-40">🥁</span>
+                    {/* Content Container - Scrollable */}
+                    <div className="min-h-screen flex flex-col items-center justify-center py-20 px-4">
+                        {/* Image - Natural Size */}
+                        <div
+                            className="relative"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            {useFirebase && selectedImage.imageUrl ? (
+                                <img
+                                    src={selectedImage.imageUrl}
+                                    alt={selectedImage.title || selectedImage.caption}
+                                    className="w-auto h-auto rounded-lg shadow-2xl"
+                                    style={{ maxWidth: '90vw' }}
+                                />
+                            ) : (
+                                <div className="w-96 h-96 bg-linear-to-br from-redBrown-800/80 via-redBrown-900/80 to-redBrown-950/80 flex items-center justify-center rounded-lg">
+                                    <span className="text-9xl opacity-40">🥁</span>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Caption - Below Image */}
+                        {selectedImage.caption && (
+                            <div className="mt-6 max-w-2xl px-4">
+                                <p className="text-center text-white/80 text-sm bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full">
+                                    {selectedImage.caption}
+                                </p>
                             </div>
                         )}
                     </div>
-
-                    {/* Caption - Bottom */}
-                    {selectedImage.caption && (
-                        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 max-w-2xl">
-                            <p className="text-center text-white/80 text-sm bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full">
-                                {selectedImage.caption}
-                            </p>
-                        </div>
-                    )}
                 </div>
             )}
         </div>

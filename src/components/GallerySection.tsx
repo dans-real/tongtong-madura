@@ -111,13 +111,9 @@ export default function GallerySection() {
         };
         if (lightboxOpen) {
             document.addEventListener('keydown', handleEscape);
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = 'unset';
         }
         return () => {
             document.removeEventListener('keydown', handleEscape);
-            document.body.style.overflow = 'unset';
         };
     }, [lightboxOpen]);
 
@@ -207,10 +203,10 @@ export default function GallerySection() {
                 </div>
             )}
 
-            {/* Lightbox Modal - Scrollable dengan ukuran asli gambar */}
+            {/* Lightbox Modal - Fit viewport dengan website scrollable */}
             {lightboxOpen && selectedImage && (
                 <div
-                    className="fixed inset-0 z-50 bg-black/97 overflow-y-auto animate-fadeIn"
+                    className="fixed inset-0 z-50 bg-black/97 flex items-center justify-center p-4 animate-fadeIn"
                     onClick={() => setLightboxOpen(false)}
                 >
                     {/* Floating Controls - Fixed position */}
@@ -228,7 +224,7 @@ export default function GallerySection() {
                                 </svg>
                             </button>
                         )}
-                        
+
                         {/* Close Button */}
                         <button
                             onClick={() => setLightboxOpen(false)}
@@ -239,36 +235,32 @@ export default function GallerySection() {
                         </button>
                     </div>
 
-                    {/* Content Container - Scrollable */}
-                    <div className="min-h-screen flex flex-col items-center justify-center py-20 px-4">
-                        {/* Image - Natural Size */}
-                        <div
-                            className="relative"
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            {useFirebase && selectedImage.imageUrl ? (
-                                <img
-                                    src={selectedImage.imageUrl}
-                                    alt={selectedImage.title || selectedImage.caption}
-                                    className="w-auto h-auto rounded-lg shadow-2xl"
-                                    style={{ maxWidth: '90vw' }}
-                                />
-                            ) : (
-                                <div className="w-96 h-96 bg-linear-to-br from-redBrown-800/80 via-redBrown-900/80 to-redBrown-950/80 flex items-center justify-center rounded-lg">
-                                    <span className="text-9xl opacity-40">🥁</span>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Caption - Below Image */}
-                        {selectedImage.caption && (
-                            <div className="mt-6 max-w-2xl px-4">
-                                <p className="text-center text-white/80 text-sm bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full">
-                                    {selectedImage.caption}
-                                </p>
+                    {/* Image Container - Fit viewport */}
+                    <div
+                        className="relative max-w-[90vw] max-h-[90vh] flex items-center justify-center"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {useFirebase && selectedImage.imageUrl ? (
+                            <img
+                                src={selectedImage.imageUrl}
+                                alt={selectedImage.title || selectedImage.caption}
+                                className="max-w-full max-h-[90vh] w-auto h-auto object-contain rounded-lg shadow-2xl"
+                            />
+                        ) : (
+                            <div className="w-96 h-96 bg-linear-to-br from-redBrown-800/80 via-redBrown-900/80 to-redBrown-950/80 flex items-center justify-center rounded-lg">
+                                <span className="text-9xl opacity-40">🥁</span>
                             </div>
                         )}
                     </div>
+
+                    {/* Caption - Bottom overlay */}
+                    {selectedImage.caption && (
+                        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 max-w-2xl px-4">
+                            <p className="text-center text-white/80 text-sm bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full">
+                                {selectedImage.caption}
+                            </p>
+                        </div>
+                    )}
                 </div>
             )}
         </div>

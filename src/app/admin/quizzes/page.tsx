@@ -380,9 +380,6 @@ export default function QuizzesAdminPage() {
                                     <div className="flex-1">
                                         <h3 className="text-xl font-bold text-white mb-2">{quiz.title}</h3>
                                         <div className="flex flex-wrap gap-2 mb-3">
-                                            <span className="text-xs bg-amber-500/20 border border-amber-500/50 px-3 py-1 rounded-full text-amber-300 font-semibold">
-                                                {quiz.level === 'basic' ? '🟢 Mudah' : quiz.level === 'medium' ? '🟡 Sedang' : '🔴 Susah'}
-                                            </span>
                                             <span className="text-xs bg-white/10 px-3 py-1 rounded-full text-redBrown-300">
                                                 {quiz.questions?.length || 0} pertanyaan
                                             </span>

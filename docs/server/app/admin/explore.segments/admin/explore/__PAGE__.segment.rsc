@@ -1,9 +1,0 @@
-1:"$Sreact.fragment"
-2:I[47257,["/tongtong-madura/_next/static/chunks/ff1a16fafef87110.js","/tongtong-madura/_next/static/chunks/247eb132b7f7b574.js"],"ClientPageRoot"]
-3:I[59874,["/tongtong-madura/_next/static/chunks/7f27f9630a007744.js","/tongtong-madura/_next/static/chunks/2af7be0c0c798a21.js","/tongtong-madura/_next/static/chunks/78f575d00717e0a5.js"],"default"]
-6:I[97367,["/tongtong-madura/_next/static/chunks/ff1a16fafef87110.js","/tongtong-madura/_next/static/chunks/247eb132b7f7b574.js"],"OutletBoundary"]
-7:"$Sreact.suspense"
-0:{"buildId":"WSWIp-m7HWZAAJIwoGpw9","rsc":["$","$1","c",{"children":[["$","$L2",null,{"Component":"$3","serverProvidedParams":{"searchParams":{},"params":{},"promises":["$@4","$@5"]}}],[["$","script","script-0",{"src":"/tongtong-madura/_next/static/chunks/2af7be0c0c798a21.js","async":true}],["$","script","script-1",{"src":"/tongtong-madura/_next/static/chunks/78f575d00717e0a5.js","async":true}]],["$","$L6",null,{"children":["$","$7",null,{"name":"Next.MetadataOutlet","children":"$@8"}]}]]}],"loading":null,"isPartial":false}
-4:{}
-5:{}
-8:null

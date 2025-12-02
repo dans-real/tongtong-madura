@@ -196,7 +196,7 @@ export default function AdminPage() {
                         <button
                             type="submit"
                             disabled={isLoggingIn}
-                            className="w-full bg-white text-redBrown-900 font-bold py-3 rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full bg-amber-500 text-white font-bold py-3 rounded-lg hover:bg-amber-600 transition-colors border-2 border-amber-400 shadow-lg shadow-amber-400/30 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {isLoggingIn ? 'Logging in...' : 'Login as Admin'}
                         </button>
@@ -260,7 +260,7 @@ export default function AdminPage() {
                     <button
                         onClick={() => setActiveTab('gallery')}
                         className={`px-6 py-3 rounded-lg font-semibold transition-all whitespace-nowrap border-2 ${activeTab === 'gallery'
-                            ? 'bg-cyan-500 text-white border-cyan-400 shadow-lg shadow-cyan-400/30'
+                            ? 'bg-amber-500 text-white border-amber-400 shadow-lg shadow-amber-400/30'
                             : 'bg-slate-700/80 text-white border-slate-600 hover:bg-slate-600'
                             }`}
                     >
@@ -269,7 +269,7 @@ export default function AdminPage() {
                     <button
                         onClick={() => setActiveTab('explore')}
                         className={`px-6 py-3 rounded-lg font-semibold transition-all whitespace-nowrap border-2 ${activeTab === 'explore'
-                            ? 'bg-emerald-500 text-white border-emerald-400 shadow-lg shadow-emerald-400/30'
+                            ? 'bg-amber-500 text-white border-amber-400 shadow-lg shadow-amber-400/30'
                             : 'bg-slate-700/80 text-white border-slate-600 hover:bg-slate-600'
                             }`}
                     >
@@ -293,7 +293,7 @@ export default function AdminPage() {
                             <h2 className="text-xl font-bold text-white">Gallery Items</h2>
                             <button
                                 onClick={() => router.push('/admin/gallery')}
-                                className="px-4 py-2 bg-cyan-500 text-white font-semibold rounded-lg hover:bg-cyan-600 transition-colors border-2 border-cyan-400 shadow-lg shadow-cyan-400/30"
+                                className="px-4 py-2 bg-amber-500 text-white font-semibold rounded-lg hover:bg-amber-600 transition-colors border-2 border-amber-400 shadow-lg shadow-amber-400/30"
                             >
                                 + Add New Gallery Item
                             </button>
@@ -345,7 +345,7 @@ export default function AdminPage() {
                                             <div className="flex gap-2 pt-2">
                                                 <button
                                                     onClick={() => handleEdit('gallery', item.id)}
-                                                    className="flex-1 px-3 py-1.5 bg-cyan-500 text-white text-xs font-semibold rounded hover:bg-cyan-600 border-2 border-cyan-400"
+                                                    className="flex-1 px-3 py-1.5 bg-amber-500 text-white text-xs font-semibold rounded hover:bg-amber-600 border-2 border-amber-400"
                                                 >
                                                     Edit
                                                 </button>
@@ -371,7 +371,7 @@ export default function AdminPage() {
                             <h2 className="text-xl font-bold text-white">Explore Content ({exploreContents.length})</h2>
                             <button
                                 onClick={() => router.push('/admin/explore')}
-                                className="px-4 py-2 bg-emerald-500 text-white font-semibold rounded-lg hover:bg-emerald-600 transition-colors border-2 border-emerald-400 shadow-lg shadow-emerald-400/30"
+                                className="px-4 py-2 bg-amber-500 text-white font-semibold rounded-lg hover:bg-amber-600 transition-colors border-2 border-amber-400 shadow-lg shadow-amber-400/30"
                             >
                                 + Add New Article
                             </button>

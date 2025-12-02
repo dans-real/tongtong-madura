@@ -65,24 +65,38 @@ export default function GallerySection() {
         setLightboxOpen(true);
     };
 
-    // Handle download
-    const handleDownload = async () => {
+    // Handle download - menggunakan metode langsung untuk menghindari CORS
+    const handleDownload = () => {
         if (!selectedImage?.imageUrl) return;
-        
+
         try {
-            const response = await fetch(selectedImage.imageUrl);
-            const blob = await response.blob();
-            const url = window.URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `${selectedImage.title || 'gallery-image'}.jpg`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            window.URL.revokeObjectURL(url);
+            // Extract filename from title or use default
+            const filename = selectedImage.title
+                ? `${selectedImage.title.replace(/[^a-zA-Z0-9]/g, '_')}.jpg`
+                : 'tongtong-madura-gallery.jpg';
+
+            // Method 1: Try to download directly with fetch
+            fetch(selectedImage.imageUrl)
+                .then(response => response.blob())
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = filename;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch(() => {
+                    // Method 2: Fallback - open in new tab
+                    // Firebase Storage akan otomatis download jika dibuka langsung
+                    window.open(selectedImage.imageUrl, '_blank');
+                });
         } catch (error) {
             console.error('Error downloading image:', error);
-            alert('Gagal mendownload gambar');
+            // Fallback - open in new tab
+            window.open(selectedImage.imageUrl, '_blank');
         }
     };
 
@@ -138,29 +152,33 @@ export default function GallerySection() {
                 ))}
             </div>
 
-            {/* Gallery Grid */}
+            {/* Gallery Grid - Masonry-style dengan aspect ratio dinamis */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto">
                 {filteredItems.map((item, index) => (
                     <div
                         key={item.id}
                         onClick={() => handleImageClick(item)}
-                        className="group relative aspect-4/3 rounded-2xl overflow-hidden border-2 border-redBrown-800/50 bg-linear-to-br from-redBrown-900 to-redBrown-950 hover:border-white/50 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-white/20 cursor-pointer"
+                        className="group relative rounded-2xl overflow-hidden border-2 border-redBrown-800/50 bg-linear-to-br from-redBrown-900 to-redBrown-950 hover:border-white/50 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-white/20 cursor-pointer"
                         style={{
                             animationDelay: `${index * 50}ms`,
                         }}
                     >
-                        {/* Image or placeholder */}
-                        {useFirebase && item.imageUrl ? (
-                            <img
-                                src={item.imageUrl}
-                                alt={item.title || item.caption}
-                                className="absolute inset-0 w-full h-full object-cover"
-                            />
-                        ) : (
-                            <div className="absolute inset-0 bg-linear-to-br from-redBrown-800/80 via-redBrown-900/80 to-redBrown-950/80 flex items-center justify-center">
-                                <span className="text-5xl opacity-40">🥁</span>
-                            </div>
-                        )}
+                        {/* Image container dengan aspect ratio fleksibel */}
+                        <div className="relative w-full" style={{ paddingBottom: '75%' }}>
+                            {/* Image or placeholder */}
+                            {useFirebase && item.imageUrl ? (
+                                <img
+                                    src={item.imageUrl}
+                                    alt={item.title || item.caption}
+                                    className="absolute inset-0 w-full h-full object-cover"
+                                    loading="lazy"
+                                />
+                            ) : (
+                                <div className="absolute inset-0 bg-linear-to-br from-redBrown-800/80 via-redBrown-900/80 to-redBrown-950/80 flex items-center justify-center">
+                                    <span className="text-5xl opacity-40">🥁</span>
+                                </div>
+                            )}
+                        </div>
 
                         {/* Overlay on hover */}
                         <div className="absolute inset-0 bg-linear-to-t from-redBrown-950/95 via-redBrown-900/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
@@ -188,75 +206,79 @@ export default function GallerySection() {
                 </div>
             )}
 
-            {/* Lightbox Modal */}
+            {/* Lightbox Modal - Support semua aspect ratio */}
             {lightboxOpen && selectedImage && (
-                <div 
+                <div
                     className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4 animate-fadeIn"
                     onClick={() => setLightboxOpen(false)}
                 >
                     <button
                         onClick={() => setLightboxOpen(false)}
-                        className="absolute top-4 right-4 text-white text-4xl hover:text-amber-400 transition-colors z-10"
+                        className="absolute top-4 right-4 text-white text-4xl hover:text-amber-400 transition-colors z-10 w-12 h-12 flex items-center justify-center rounded-full hover:bg-white/10"
                         aria-label="Close"
                     >
                         ×
                     </button>
-                    
-                    <div 
-                        className="relative max-w-6xl max-h-[90vh] flex flex-col"
+
+                    <div
+                        className="relative w-full max-w-7xl flex flex-col gap-4 max-h-[95vh]"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        {/* Image */}
-                        <div className="relative flex-1 flex items-center justify-center">
+                        {/* Image Container - Responsive untuk semua aspect ratio */}
+                        <div className="relative flex-1 flex items-center justify-center overflow-hidden min-h-0">
                             {useFirebase && selectedImage.imageUrl ? (
                                 <img
                                     src={selectedImage.imageUrl}
                                     alt={selectedImage.title || selectedImage.caption}
-                                    className="max-w-full max-h-[75vh] object-contain rounded-lg shadow-2xl"
+                                    className="max-w-full max-h-[calc(95vh-200px)] w-auto h-auto object-contain rounded-lg shadow-2xl"
+                                    style={{
+                                        maxHeight: 'calc(95vh - 200px)',
+                                        maxWidth: '100%',
+                                    }}
                                 />
                             ) : (
-                                <div className="w-96 h-96 bg-linear-to-br from-redBrown-800/80 via-redBrown-900/80 to-redBrown-950/80 flex items-center justify-center rounded-lg">
+                                <div className="w-full max-w-md aspect-square bg-linear-to-br from-redBrown-800/80 via-redBrown-900/80 to-redBrown-950/80 flex items-center justify-center rounded-lg">
                                     <span className="text-9xl opacity-40">🥁</span>
                                 </div>
                             )}
                         </div>
-                        
+
                         {/* Info & Download Button */}
-                        <div className="mt-4 bg-redBrown-900/80 backdrop-blur-md rounded-lg p-4 border-2 border-redBrown-700">
-                            <div className="flex items-start justify-between gap-4">
-                                <div className="flex-1">
+                        <div className="bg-redBrown-900/90 backdrop-blur-md rounded-xl p-4 md:p-5 border-2 border-redBrown-700 shadow-xl">
+                            <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
+                                <div className="flex-1 min-w-0">
                                     {selectedImage.title && (
-                                        <h3 className="text-lg font-bold text-white mb-2">{selectedImage.title}</h3>
+                                        <h3 className="text-base md:text-lg font-bold text-white mb-2 truncate">{selectedImage.title}</h3>
                                     )}
-                                    <p className="text-sm text-redBrown-200 mb-2">{selectedImage.caption}</p>
+                                    <p className="text-xs md:text-sm text-redBrown-200 mb-3 line-clamp-2">{selectedImage.caption}</p>
                                     <div className="flex flex-wrap gap-1.5">
                                         {selectedImage.tags.map((tag) => (
                                             <span
                                                 key={tag}
-                                                className="px-2 py-1 rounded-full bg-amber-400/90 border-2 border-amber-300 text-xs text-redBrown-950 font-bold"
+                                                className="px-2.5 py-1 rounded-full bg-amber-400/90 border-2 border-amber-300 text-xs text-redBrown-950 font-bold"
                                             >
                                                 {tag}
                                             </span>
                                         ))}
                                     </div>
                                 </div>
-                                
+
                                 {/* Download Button */}
                                 {useFirebase && selectedImage.imageUrl && (
                                     <button
                                         onClick={handleDownload}
-                                        className="flex items-center gap-2 px-4 py-2 bg-amber-400 hover:bg-amber-500 text-redBrown-950 font-bold rounded-lg transition-all duration-300 shadow-lg hover:shadow-amber-400/50 hover:scale-105"
+                                        className="flex items-center justify-center gap-2 px-4 md:px-5 py-2.5 md:py-3 bg-amber-400 hover:bg-amber-500 text-redBrown-950 font-bold rounded-lg transition-all duration-300 shadow-lg hover:shadow-amber-400/50 hover:scale-105 whitespace-nowrap shrink-0"
                                     >
                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                         </svg>
-                                        <span>Download</span>
+                                        <span className="hidden sm:inline">Download</span>
                                     </button>
                                 )}
                             </div>
                         </div>
-                        
-                        <p className="text-center text-redBrown-400 text-xs mt-2">Tekan ESC atau klik di luar untuk menutup</p>
+
+                        <p className="text-center text-redBrown-400 text-xs">Tekan ESC atau klik di luar untuk menutup</p>
                     </div>
                 </div>
             )}

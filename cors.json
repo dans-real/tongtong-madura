@@ -1,0 +1,22 @@
+[
+    {
+        "origin": [
+            "https://dans-real.github.io",
+            "http://localhost:3000",
+            "https://localhost:3000"
+        ],
+        "method": [
+            "GET",
+            "HEAD",
+            "PUT",
+            "POST",
+            "DELETE"
+        ],
+        "maxAgeSeconds": 3600,
+        "responseHeader": [
+            "Content-Type",
+            "Access-Control-Allow-Origin",
+            "Content-Disposition"
+        ]
+    }
+]

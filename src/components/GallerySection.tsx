@@ -76,8 +76,11 @@ export default function GallerySection() {
                 : 'tongtong-madura-gallery.jpg';
 
             // Method 1: Try to download directly with fetch
-            fetch(selectedImage.imageUrl)
-                .then(response => response.blob())
+            fetch(selectedImage.imageUrl, { mode: 'cors' })
+                .then(response => {
+                    if (!response.ok) throw new Error('Fetch failed');
+                    return response.blob();
+                })
                 .then(blob => {
                     const url = window.URL.createObjectURL(blob);
                     const link = document.createElement('a');
@@ -91,6 +94,7 @@ export default function GallerySection() {
                 .catch(() => {
                     // Method 2: Fallback - open in new tab
                     // Firebase Storage akan otomatis download jika dibuka langsung
+                    console.log('Using fallback download method (opening in new tab)');
                     window.open(selectedImage.imageUrl, '_blank');
                 });
         } catch (error) {

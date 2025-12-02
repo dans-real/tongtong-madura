@@ -156,33 +156,30 @@ export default function GallerySection() {
                 ))}
             </div>
 
-            {/* Gallery Grid - Masonry-style dengan aspect ratio dinamis */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto">
+            {/* Gallery Grid - Preserve original aspect ratios */}
+            <div className="columns-1 sm:columns-2 lg:columns-3 gap-5 max-w-6xl mx-auto space-y-5">
                 {filteredItems.map((item, index) => (
                     <div
                         key={item.id}
                         onClick={() => handleImageClick(item)}
-                        className="group relative rounded-2xl overflow-hidden border-2 border-redBrown-800/50 bg-linear-to-br from-redBrown-900 to-redBrown-950 hover:border-white/50 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-white/20 cursor-pointer"
+                        className="group relative rounded-2xl overflow-hidden border-2 border-redBrown-800/50 bg-linear-to-br from-redBrown-900 to-redBrown-950 hover:border-white/50 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-white/20 cursor-pointer break-inside-avoid"
                         style={{
                             animationDelay: `${index * 50}ms`,
                         }}
                     >
-                        {/* Image container dengan aspect ratio fleksibel */}
-                        <div className="relative w-full" style={{ paddingBottom: '75%' }}>
-                            {/* Image or placeholder */}
-                            {useFirebase && item.imageUrl ? (
-                                <img
-                                    src={item.imageUrl}
-                                    alt={item.title || item.caption}
-                                    className="absolute inset-0 w-full h-full object-cover"
-                                    loading="lazy"
-                                />
-                            ) : (
-                                <div className="absolute inset-0 bg-linear-to-br from-redBrown-800/80 via-redBrown-900/80 to-redBrown-950/80 flex items-center justify-center">
-                                    <span className="text-5xl opacity-40">🥁</span>
-                                </div>
-                            )}
-                        </div>
+                        {/* Image with original aspect ratio */}
+                        {useFirebase && item.imageUrl ? (
+                            <img
+                                src={item.imageUrl}
+                                alt={item.title || item.caption}
+                                className="w-full h-auto object-cover"
+                                loading="lazy"
+                            />
+                        ) : (
+                            <div className="w-full aspect-square bg-linear-to-br from-redBrown-800/80 via-redBrown-900/80 to-redBrown-950/80 flex items-center justify-center">
+                                <span className="text-5xl opacity-40">🥁</span>
+                            </div>
+                        )}
 
                         {/* Overlay on hover */}
                         <div className="absolute inset-0 bg-linear-to-t from-redBrown-950/95 via-redBrown-900/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
@@ -210,80 +207,61 @@ export default function GallerySection() {
                 </div>
             )}
 
-            {/* Lightbox Modal - Support semua aspect ratio */}
+            {/* Lightbox Modal - Simple zoom dengan download button */}
             {lightboxOpen && selectedImage && (
                 <div
-                    className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4 animate-fadeIn"
+                    className="fixed inset-0 z-50 bg-black/97 flex items-center justify-center p-4 animate-fadeIn"
                     onClick={() => setLightboxOpen(false)}
                 >
+                    {/* Close Button */}
                     <button
                         onClick={() => setLightboxOpen(false)}
-                        className="absolute top-4 right-4 text-white text-4xl hover:text-amber-400 transition-colors z-10 w-12 h-12 flex items-center justify-center rounded-full hover:bg-white/10"
+                        className="absolute top-6 right-6 text-white/80 text-3xl hover:text-white transition-colors z-10 w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10"
                         aria-label="Close"
                     >
-                        ×
+                        ✕
                     </button>
 
+                    {/* Download Button - Floating */}
+                    {useFirebase && selectedImage.imageUrl && (
+                        <button
+                            onClick={handleDownload}
+                            className="absolute top-6 right-20 text-white/80 hover:text-white transition-all z-10 w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10"
+                            aria-label="Download"
+                            title="Download gambar"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                        </button>
+                    )}
+
+                    {/* Zoomed Image */}
                     <div
-                        className="relative w-full max-w-7xl flex flex-col gap-4 max-h-[95vh]"
+                        className="relative max-w-[90vw] max-h-[90vh] flex items-center justify-center"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        {/* Image Container - Responsive untuk semua aspect ratio */}
-                        <div className="relative flex-1 flex items-center justify-center overflow-hidden min-h-0">
-                            {useFirebase && selectedImage.imageUrl ? (
-                                <img
-                                    src={selectedImage.imageUrl}
-                                    alt={selectedImage.title || selectedImage.caption}
-                                    className="max-w-full max-h-[calc(95vh-200px)] w-auto h-auto object-contain rounded-lg shadow-2xl"
-                                    style={{
-                                        maxHeight: 'calc(95vh - 200px)',
-                                        maxWidth: '100%',
-                                    }}
-                                />
-                            ) : (
-                                <div className="w-full max-w-md aspect-square bg-linear-to-br from-redBrown-800/80 via-redBrown-900/80 to-redBrown-950/80 flex items-center justify-center rounded-lg">
-                                    <span className="text-9xl opacity-40">🥁</span>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Info & Download Button */}
-                        <div className="bg-redBrown-900/90 backdrop-blur-md rounded-xl p-4 md:p-5 border-2 border-redBrown-700 shadow-xl">
-                            <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
-                                <div className="flex-1 min-w-0">
-                                    {selectedImage.title && (
-                                        <h3 className="text-base md:text-lg font-bold text-white mb-2 truncate">{selectedImage.title}</h3>
-                                    )}
-                                    <p className="text-xs md:text-sm text-redBrown-200 mb-3 line-clamp-2">{selectedImage.caption}</p>
-                                    <div className="flex flex-wrap gap-1.5">
-                                        {selectedImage.tags.map((tag) => (
-                                            <span
-                                                key={tag}
-                                                className="px-2.5 py-1 rounded-full bg-amber-400/90 border-2 border-amber-300 text-xs text-redBrown-950 font-bold"
-                                            >
-                                                {tag}
-                                            </span>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* Download Button */}
-                                {useFirebase && selectedImage.imageUrl && (
-                                    <button
-                                        onClick={handleDownload}
-                                        className="flex items-center justify-center gap-2 px-4 md:px-5 py-2.5 md:py-3 bg-amber-400 hover:bg-amber-500 text-redBrown-950 font-bold rounded-lg transition-all duration-300 shadow-lg hover:shadow-amber-400/50 hover:scale-105 whitespace-nowrap shrink-0"
-                                    >
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                        </svg>
-                                        <span className="hidden sm:inline">Download</span>
-                                    </button>
-                                )}
+                        {useFirebase && selectedImage.imageUrl ? (
+                            <img
+                                src={selectedImage.imageUrl}
+                                alt={selectedImage.title || selectedImage.caption}
+                                className="max-w-full max-h-[90vh] w-auto h-auto object-contain rounded-lg shadow-2xl"
+                            />
+                        ) : (
+                            <div className="w-96 h-96 bg-linear-to-br from-redBrown-800/80 via-redBrown-900/80 to-redBrown-950/80 flex items-center justify-center rounded-lg">
+                                <span className="text-9xl opacity-40">🥁</span>
                             </div>
-                        </div>
-
-                        <p className="text-center text-redBrown-400 text-xs">Tekan ESC atau klik di luar untuk menutup</p>
+                        )}
                     </div>
+
+                    {/* Caption - Bottom */}
+                    {selectedImage.caption && (
+                        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 max-w-2xl">
+                            <p className="text-center text-white/80 text-sm bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full">
+                                {selectedImage.caption}
+                            </p>
+                        </div>
+                    )}
                 </div>
             )}
         </div>

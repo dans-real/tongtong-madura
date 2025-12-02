@@ -88,7 +88,7 @@ export default function KuisSection() {
                     {quizzes.map((quiz) => (
                         <Link
                             key={quiz.id}
-                            href={`/quiz/${quiz.slug}`}
+                            href={`/quiz/detail?slug=${quiz.slug}`}
                             className="group rounded-2xl border-2 border-redBrown-700/50 bg-linear-to-br from-redBrown-900/80 to-redBrown-800/60 hover:border-amber-500 hover:bg-redBrown-900 hover:-translate-y-1 hover:shadow-lg hover:shadow-amber-600/40 transition-all duration-300 p-5 flex flex-col gap-3 shadow-2xl shadow-redBrown-950/50 relative overflow-hidden"
                         >
                             {/* Decorative overlay */}

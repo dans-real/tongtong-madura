@@ -208,6 +208,7 @@ export default function GallerySection() {
                 <div
                     className="fixed inset-0 z-50 bg-black/97 flex items-center justify-center p-4 animate-fadeIn"
                     onClick={() => setLightboxOpen(false)}
+                    suppressHydrationWarning
                 >
                     {/* Floating Controls - Fixed position */}
                     <div className="fixed top-6 right-6 flex gap-3 z-20">

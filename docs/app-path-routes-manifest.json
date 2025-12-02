@@ -1,0 +1,17 @@
+{
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/admin/explore/page": "/admin/explore",
+  "/admin/gallery/page": "/admin/gallery",
+  "/admin/page": "/admin",
+  "/admin/quizzes/page": "/admin/quizzes",
+  "/admin/regions/page": "/admin/regions",
+  "/daerah/[slug]/page": "/daerah/[slug]",
+  "/favicon.ico/route": "/favicon.ico",
+  "/page": "/",
+  "/peta/page": "/peta",
+  "/quiz/detail/page": "/quiz/detail",
+  "/quiz/page": "/quiz",
+  "/robots.txt/route": "/robots.txt",
+  "/sitemap.xml/route": "/sitemap.xml"
+}

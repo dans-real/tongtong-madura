@@ -1,0 +1,3 @@
+module.exports=[27267,a=>{"use strict";var b=a.i(72131);let c={pageView:a=>{},track:a=>{},quizCompleted:(a,b)=>{c.track({name:"quiz_completed",properties:{quiz_slug:a,score:b}})},materialRead:(a,b)=>{c.track({name:"material_read",properties:{material_slug:a,category:b}})},regionExplored:a=>{c.track({name:"region_explored",properties:{region_slug:a}})}};function d({slug:a}){return(0,b.useEffect)(()=>{c.regionExplored(a)},[a]),null}a.s(["default",()=>d],27267)}];
+
+//# sourceMappingURL=src_app_daerah_%5Bslug%5D_RegionTracker_tsx_3ebdccaf._.js.map

@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/daerah/layout,_N_T_/daerah/[slug]/layout,_N_T_/daerah/[slug]/page,_N_T_/daerah/bangkalan/"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/daerah/$d$slug/__PAGE__",
+    "/daerah/$d$slug",
+    "/daerah",
+    "/_index",
+    "/_head"
+  ]
+}

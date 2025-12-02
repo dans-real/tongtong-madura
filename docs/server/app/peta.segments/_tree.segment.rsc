@@ -1,0 +1,2 @@
+:HL["/tongtong-madura/_next/static/chunks/b442686f84a01137.css","style"]
+0:{"buildId":"WSWIp-m7HWZAAJIwoGpw9","tree":{"name":"","paramType":null,"paramKey":"","hasRuntimePrefetch":false,"slots":{"children":{"name":"peta","paramType":null,"paramKey":"peta","hasRuntimePrefetch":false,"slots":{"children":{"name":"__PAGE__","paramType":null,"paramKey":"__PAGE__","hasRuntimePrefetch":false,"slots":null,"isRootLayout":false}},"isRootLayout":false}},"isRootLayout":true},"staleTime":300}

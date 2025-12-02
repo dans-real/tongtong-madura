@@ -465,14 +465,7 @@ export default function AdminPage() {
                                                     <h3 className="text-lg font-bold text-white">{quiz.title}</h3>
                                                     <p className="text-xs text-redBrown-400">Slug: {quiz.slug}</p>
                                                 </div>
-                                                <span className={`px-2 py-1 rounded text-xs font-semibold border-2 ${quiz.level === 'basic' ? 'bg-green-500 text-white border-green-400' :
-                                                    quiz.level === 'medium' ? 'bg-amber-500 text-white border-amber-400' :
-                                                        'bg-red-600 text-white border-red-500'
-                                                    }`}>
-                                                    {quiz.level === 'basic' ? '🌟 Mudah' :
-                                                        quiz.level === 'medium' ? '🔥 Sedang' :
-                                                            '💀 Susah'}
-                                                </span>
+
                                             </div>
                                             <div className="flex gap-2 pt-2">
                                                 <button

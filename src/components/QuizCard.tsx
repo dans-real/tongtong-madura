@@ -1,24 +1,6 @@
 import Link from "next/link";
 import type { Quiz } from "@/data/quizzes";
 
-const levelLabel: Record<Quiz["level"], string> = {
-    basic: "MUDAH",
-    medium: "SEDANG",
-    advanced: "SUSAH",
-};
-
-const levelColor: Record<Quiz["level"], string> = {
-    basic: "bg-green-500/20 border-green-500/50 text-green-400",
-    medium: "bg-amber-500/20 border-amber-500/50 text-amber-400",
-    advanced: "bg-red-500/20 border-red-500/50 text-red-400",
-};
-
-const levelEmoji: Record<Quiz["level"], string> = {
-    basic: "🌟",
-    medium: "🔥",
-    advanced: "💀",
-};
-
 export default function QuizCard({ quiz }: { quiz: Quiz }) {
     return (
         <article>
@@ -29,11 +11,7 @@ export default function QuizCard({ quiz }: { quiz: Quiz }) {
             >
                 <div className="absolute top-0 right-0 w-20 h-20 bg-linear-to-br from-redBrown-500/10 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity" />
 
-                <div className="flex items-center justify-between">
-                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full border text-[9px] font-bold tracking-wider ${levelColor[quiz.level]}`}>
-                        <span>{levelEmoji[quiz.level]}</span>
-                        {levelLabel[quiz.level]}
-                    </span>
+                <div className="flex items-center justify-end">
                     <span className="text-[10px] text-redBrown-300">
                         {quiz.questions.length} soal
                     </span>

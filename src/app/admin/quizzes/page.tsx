@@ -271,19 +271,6 @@ export default function QuizzesAdminPage() {
                             </div>
                         </div>
 
-                        <div>
-                            <label className="block text-sm font-medium text-amber-300 mb-2">Level Kesulitan *</label>
-                            <select
-                                value={level}
-                                onChange={(e) => setLevel(e.target.value as any)}
-                                className="w-full px-4 py-2 bg-redBrown-800 border-2 border-redBrown-600 rounded-lg text-white focus:border-amber-400 focus:outline-none"
-                            >
-                                <option value="basic">🟢 Basic (Mudah)</option>
-                                <option value="medium">🟡 Medium (Sedang)</option>
-                                <option value="advanced">🔴 Advanced (Susah)</option>
-                            </select>
-                        </div>
-
                         <hr className="border-amber-500/30" />
 
                         {/* Questions */}

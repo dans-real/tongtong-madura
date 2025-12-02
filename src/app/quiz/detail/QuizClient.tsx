@@ -22,18 +22,6 @@ interface Quiz {
     questions: QuizQuestion[];
 }
 
-const levelColors = {
-    basic: "bg-green-500",
-    medium: "bg-amber-500",
-    advanced: "bg-red-500",
-};
-
-const levelLabels = {
-    basic: "MUDAH",
-    medium: "SEDANG",
-    advanced: "SUSAH",
-};
-
 export default function QuizClient({ quiz }: { quiz: Quiz }) {
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>({});
@@ -125,11 +113,6 @@ export default function QuizClient({ quiz }: { quiz: Quiz }) {
             <div className="max-w-3xl mx-auto space-y-6">
                 {/* Header */}
                 <div className="text-center space-y-3">
-                    <div className="flex items-center justify-center gap-2">
-                        <span className={`px-3 py-1 rounded-full text-xs font-bold text-white ${levelColors[quiz.level]}`}>
-                            {levelLabels[quiz.level]}
-                        </span>
-                    </div>
                     <h1 className="text-2xl md:text-3xl font-bold text-white">{quiz.title}</h1>
                     <p className="text-redBrown-300">
                         Pertanyaan {currentQuestion + 1} dari {totalQuestions}

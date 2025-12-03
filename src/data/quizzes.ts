@@ -1,25 +1,24 @@
+export type Quiz = {
+    id: string;
+    slug: string;
+    title: string;
+    questionCount: number;  // computed from questions.length
+    questions: Question[];
+};
+
 export type QuizOption = {
     id: string;
     text: string;
     isCorrect: boolean;
 };
 
-export type QuizQuestion = {
+export type Question = {
     id: string;
     question: string;
     options: QuizOption[];
 };
 
-export type Quiz = {
-    id: string;
-    slug: string;
-    title: string;
-    level: "basic" | "medium" | "advanced";
-    questions: QuizQuestion[];
-    description?: string;
-};
-
-// Static data dihapus - semua data quiz dikelola melalui admin dashboard Firebase
+// Sample static quizzes (will be replaced by Firebase data)
 export const quizzes: Quiz[] = [];
 
 export function getQuizBySlug(slug: string): Quiz | undefined {

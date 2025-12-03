@@ -32,7 +32,6 @@ interface Quiz {
     id: string;
     slug: string;
     title: string;
-    level: 'basic' | 'medium' | 'advanced';
     questions: QuizQuestion[];
 }
 
@@ -45,7 +44,6 @@ export default function QuizzesAdminPage() {
 
     const [slug, setSlug] = useState('');
     const [title, setTitle] = useState('');
-    const [level, setLevel] = useState<'basic' | 'medium' | 'advanced'>('basic');
     const [questions, setQuestions] = useState<QuizQuestion[]>([
         {
             id: '1',
@@ -81,7 +79,6 @@ export default function QuizzesAdminPage() {
     const resetForm = () => {
         setSlug('');
         setTitle('');
-        setLevel('basic');
         setQuestions([
             {
                 id: '1',
@@ -179,7 +176,6 @@ export default function QuizzesAdminPage() {
             const quizData = {
                 slug,
                 title,
-                level,
                 questions,
                 updatedAt: Timestamp.now()
             };
@@ -204,7 +200,6 @@ export default function QuizzesAdminPage() {
     const handleEdit = (quiz: Quiz) => {
         setSlug(quiz.slug);
         setTitle(quiz.title);
-        setLevel(quiz.level);
         setQuestions(quiz.questions || []);
         setIsEditing(true);
         setEditingId(quiz.id);
@@ -346,9 +341,9 @@ export default function QuizzesAdminPage() {
                         <div className="flex gap-3 pt-4">
                             <button
                                 type="submit"
-                                className="px-8 py-3 bg-amber-500 text-white font-bold rounded-lg hover:bg-amber-600 border-2 border-amber-400 shadow-lg shadow-amber-400/30"
+                                className="px-8 py-3 bg-maduraGold text-redBrown-950 font-bold rounded-lg hover:bg-amber-400 border-2 border-amber-400 shadow-lg shadow-maduraGold/30"
                             >
-                                {isEditing ? '💾 Update Quiz' : '➕ Simpan Quiz'}
+                                {isEditing ? '💾 Update Quiz' : '➕ Add Quiz'}
                             </button>
                             {isEditing && (
                                 <button

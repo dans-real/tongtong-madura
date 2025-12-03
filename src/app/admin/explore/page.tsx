@@ -224,28 +224,28 @@ export default function ExploreAdminPage() {
                 </div>
 
                 {/* Form */}
-                <div className="bg-redBrown-900/80 border-2 border-emerald-500/50 rounded-2xl p-6 mb-8">
+                <div className="bg-redBrown-900/80 border-2 border-amber-500/50 rounded-2xl p-6 mb-8">
                     <h2 className="text-2xl font-bold text-white mb-6">
                         {isEditing ? '✏️ Edit Artikel' : '➕ Tambah Artikel Baru'}
                     </h2>
                     <form onSubmit={handleSubmit} className="space-y-6">
                         {/* Image Upload */}
                         <div>
-                            <label className="block text-sm font-medium text-emerald-300 mb-2">
+                            <label className="block text-sm font-medium text-amber-300 mb-2">
                                 Foto Artikel *
                             </label>
                             <input
                                 type="file"
                                 accept="image/*"
                                 onChange={handleImageChange}
-                                className="w-full px-4 py-2 bg-redBrown-800 border-2 border-redBrown-600 rounded-lg text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-emerald-500 file:text-white hover:file:bg-emerald-600"
+                                className="w-full px-4 py-2 bg-redBrown-800 border-2 border-redBrown-600 rounded-lg text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-maduraGold file:text-redBrown-950 file:font-bold hover:file:bg-amber-400"
                             />
                             {imagePreview && (
                                 <div className="mt-3">
                                     <img
                                         src={imagePreview}
                                         alt="Preview"
-                                        className="w-full max-w-md h-48 object-cover rounded-lg border-2 border-emerald-500/50"
+                                        className="w-full max-w-md h-48 object-cover rounded-lg border-2 border-amber-500/50"
                                     />
                                 </div>
                             )}
@@ -253,7 +253,7 @@ export default function ExploreAdminPage() {
 
                         {/* Title */}
                         <div>
-                            <label className="block text-sm font-medium text-emerald-300 mb-2">
+                            <label className="block text-sm font-medium text-amber-300 mb-2">
                                 Judul Artikel *
                             </label>
                             <input
@@ -268,7 +268,7 @@ export default function ExploreAdminPage() {
 
                         {/* Informasi */}
                         <div>
-                            <label className="block text-sm font-medium text-emerald-300 mb-2">
+                            <label className="block text-sm font-medium text-amber-300 mb-2">
                                 Informasi (Konten Artikel) *
                             </label>
                             <textarea
@@ -283,7 +283,7 @@ export default function ExploreAdminPage() {
 
                         {/* Referensi */}
                         <div>
-                            <label className="block text-sm font-medium text-emerald-300 mb-2">
+                            <label className="block text-sm font-medium text-amber-300 mb-2">
                                 Referensi / Sumber *
                             </label>
                             <textarea
@@ -300,9 +300,9 @@ export default function ExploreAdminPage() {
                             <button
                                 type="submit"
                                 disabled={isUploading}
-                                className="px-8 py-3 bg-emerald-500 text-white font-bold rounded-lg hover:bg-emerald-600 border-2 border-emerald-400 shadow-lg shadow-emerald-400/30 disabled:opacity-50"
+                                className="px-8 py-3 bg-maduraGold text-redBrown-950 font-bold rounded-lg hover:bg-amber-400 border-2 border-amber-400 shadow-lg shadow-maduraGold/30 disabled:opacity-50"
                             >
-                                {isUploading ? '⏳ Uploading...' : isEditing ? '💾 Update Artikel' : '➕ Simpan Artikel'}
+                                {isUploading ? '⏳ Uploading...' : isEditing ? '💾 Update Artikel' : '➕ Add Artikel'}
                             </button>
                             {isEditing && (
                                 <button

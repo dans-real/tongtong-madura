@@ -23,7 +23,13 @@ interface GalleryItem {
     title: string;
     caption: string;
     tags: string[];
+    region?: string;
+    mood?: string;
+    year?: number;
+    description?: string;
+    isFeatured?: boolean;
     createdAt: Timestamp;
+    updatedAt?: Timestamp;
 }
 
 export default function GalleryAdminPage() {
@@ -39,10 +45,16 @@ export default function GalleryAdminPage() {
     const [imageUrl, setImageUrl] = useState('');
     const [title, setTitle] = useState('');
     const [caption, setCaption] = useState('');
+    const [description, setDescription] = useState('');
     const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
+    const [primaryRegion, setPrimaryRegion] = useState('');
+    const [mood, setMood] = useState('');
+    const [year, setYear] = useState<number>(new Date().getFullYear());
+    const [isFeatured, setIsFeatured] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
 
     const REGIONS = ['Bangkalan', 'Sampang', 'Pamekasan', 'Sumenep'];
+    const MOODS = ['Night Parade', 'Festival', 'Practice', 'Cultural Event', 'Workshop'];
 
     // Redirect if not authenticated
     useEffect(() => {
@@ -73,7 +85,12 @@ export default function GalleryAdminPage() {
         setImageUrl('');
         setTitle('');
         setCaption('');
+        setDescription('');
         setSelectedRegions([]);
+        setPrimaryRegion('');
+        setMood('');
+        setYear(new Date().getFullYear());
+        setIsFeatured(false);
         setIsEditing(false);
         setEditingId(null);
     };
@@ -188,6 +205,11 @@ export default function GalleryAdminPage() {
                     title,
                     caption,
                     tags: selectedRegions,
+                    description: description || caption,
+                    region: primaryRegion || (selectedRegions.length === 1 ? selectedRegions[0] : undefined),
+                    mood: mood || undefined,
+                    year: year || undefined,
+                    isFeatured: isFeatured,
                     updatedAt: Timestamp.now()
                 };
 
@@ -203,7 +225,12 @@ export default function GalleryAdminPage() {
                     imageUrl: finalImageUrl,
                     title,
                     caption,
+                    description: description || caption,
                     tags: selectedRegions,
+                    region: primaryRegion || (selectedRegions.length === 1 ? selectedRegions[0] : undefined),
+                    mood: mood || undefined,
+                    year: year || undefined,
+                    isFeatured: isFeatured,
                     createdAt: Timestamp.now(),
                     updatedAt: Timestamp.now()
                 });
@@ -223,7 +250,12 @@ export default function GalleryAdminPage() {
         setImagePreview(item.imageUrl);
         setTitle(item.title);
         setCaption(item.caption);
+        setDescription(item.description || '');
         setSelectedRegions(item.tags || []);
+        setPrimaryRegion(item.region || '');
+        setMood(item.mood || '');
+        setYear(item.year || new Date().getFullYear());
+        setIsFeatured(item.isFeatured || false);
         setIsEditing(true);
         setEditingId(item.id);
     };
@@ -262,25 +294,25 @@ export default function GalleryAdminPage() {
                 </div>
 
                 {/* Add/Edit Form */}
-                <div className="bg-redBrown-900/80 border-2 border-redBrown-700/50 rounded-2xl p-6 mb-8">
+                <div className="bg-redBrown-900/80 border-2 border-amber-500/50 rounded-2xl p-6 mb-8">
                     <h2 className="text-xl font-bold text-white mb-4">
                         {isEditing ? 'Edit Item' : 'Add New Item'}
                     </h2>
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium text-redBrown-200 mb-2">
+                            <label className="block text-sm font-medium text-amber-300 mb-2">
                                 Upload Image {!isEditing && <span className="text-red-400">*</span>}
                             </label>
                             <input
                                 type="file"
                                 accept="image/*"
                                 onChange={handleImageChange}
-                                className="w-full px-4 py-2 bg-redBrown-800 border border-redBrown-600 rounded-lg text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-cyan-500 file:text-white hover:file:bg-cyan-600"
+                                className="w-full px-4 py-2 bg-redBrown-800 border border-redBrown-600 rounded-lg text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-maduraGold file:text-redBrown-950 file:font-bold hover:file:bg-amber-400"
                             />
                             {imagePreview && (
-                                <div className="mt-3 relative aspect-video bg-redBrown-800 rounded-lg overflow-hidden border-2 border-cyan-400">
+                                <div className="mt-3 relative aspect-video bg-redBrown-800 rounded-lg overflow-hidden border-2 border-amber-400">
                                     <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
-                                    <div className="absolute top-2 right-2 bg-cyan-500 text-white px-3 py-1 rounded-lg text-xs font-bold">
+                                    <div className="absolute top-2 right-2 bg-maduraGold text-redBrown-950 px-3 py-1 rounded-lg text-xs font-bold">
                                         Preview
                                     </div>
                                 </div>
@@ -288,7 +320,7 @@ export default function GalleryAdminPage() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-redBrown-200 mb-2">Title</label>
+                            <label className="block text-sm font-medium text-amber-300 mb-2">Title</label>
                             <input
                                 type="text"
                                 value={title}
@@ -300,19 +332,46 @@ export default function GalleryAdminPage() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-redBrown-200 mb-2">Caption</label>
+                            <label className="block text-sm font-medium text-amber-300 mb-2">Caption (Short)</label>
                             <textarea
                                 value={caption}
                                 onChange={(e) => setCaption(e.target.value)}
                                 required
-                                rows={3}
+                                rows={2}
                                 className="w-full px-4 py-2 bg-redBrown-800 border border-redBrown-600 rounded-lg text-white"
-                                placeholder="Photo caption"
+                                placeholder="Caption singkat untuk preview card"
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-redBrown-200 mb-2">
+                            <label className="block text-sm font-medium text-amber-300 mb-2">
+                                Description (Optional - untuk detail lebih panjang)
+                            </label>
+                            <textarea
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                rows={3}
+                                className="w-full px-4 py-2 bg-redBrown-800 border border-redBrown-600 rounded-lg text-white"
+                                placeholder="Deskripsi detail (opsional, jika kosong akan pakai caption)"
+                            />
+                        </div>
+
+                        <div className="flex items-center">
+                            <label className="flex items-center gap-3 cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    checked={isFeatured}
+                                    onChange={(e) => setIsFeatured(e.target.checked)}
+                                    className="w-5 h-5 rounded bg-redBrown-800 border-2 border-maduraGold checked:bg-maduraGold checked:border-maduraGold"
+                                />
+                                <span className="text-sm font-medium text-amber-300">
+                                    ⭐ Mark as Featured (tampil besar di atas)
+                                </span>
+                            </label>
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-amber-300 mb-2">
                                 Wilayah Tags (Pilih wilayah yang sesuai)
                             </label>
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -322,8 +381,8 @@ export default function GalleryAdminPage() {
                                         type="button"
                                         onClick={() => toggleRegion(region)}
                                         className={`px-4 py-3 rounded-lg font-semibold transition-all border-2 ${selectedRegions.includes(region)
-                                            ? 'bg-cyan-500 text-white border-cyan-400 shadow-lg shadow-cyan-400/30'
-                                            : 'bg-redBrown-800 text-white border-redBrown-600 hover:border-cyan-400/50'
+                                            ? 'bg-maduraGold text-redBrown-950 border-amber-400 shadow-lg shadow-maduraGold/30'
+                                            : 'bg-redBrown-800 text-white border-redBrown-600 hover:border-maduraGold/50'
                                             }`}
                                     >
                                         {region}
@@ -341,9 +400,9 @@ export default function GalleryAdminPage() {
                             <button
                                 type="submit"
                                 disabled={isUploading}
-                                className="px-6 py-2 bg-cyan-500 text-white font-bold rounded-lg hover:bg-cyan-600 border-2 border-cyan-400 shadow-lg shadow-cyan-400/30 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="px-6 py-2 bg-maduraGold text-redBrown-950 font-bold rounded-lg hover:bg-amber-400 border-2 border-amber-400 shadow-lg shadow-maduraGold/30 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                {isUploading ? 'Uploading...' : isEditing ? 'Update Item' : 'Add Item'}
+                                {isUploading ? 'Uploading...' : isEditing ? '💾 Update Item' : '➕ Add Item'}
                             </button>
                             {isEditing && (
                                 <button
@@ -367,11 +426,34 @@ export default function GalleryAdminPage() {
                                 key={item.id}
                                 className="bg-redBrown-900/80 border-2 border-redBrown-700/50 rounded-xl p-4 space-y-3"
                             >
+                                {/* Featured Badge */}
+                                {item.isFeatured && (
+                                    <div className="flex justify-end">
+                                        <span className="px-3 py-1 rounded-full bg-maduraGold text-redBrown-950 text-xs font-bold">
+                                            ⭐ FEATURED
+                                        </span>
+                                    </div>
+                                )}
+
                                 <div className="aspect-video bg-redBrown-800 rounded-lg overflow-hidden">
                                     <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
                                 </div>
                                 <h3 className="text-lg font-bold text-white">{item.title}</h3>
                                 <p className="text-sm text-redBrown-300">{item.caption}</p>
+
+                                {/* Additional Info */}
+                                <div className="space-y-1 text-xs text-redBrown-400">
+                                    {item.region && (
+                                        <p><span className="font-semibold">Primary Region:</span> {item.region}</p>
+                                    )}
+                                    {item.mood && (
+                                        <p><span className="font-semibold">Mood:</span> {item.mood}</p>
+                                    )}
+                                    {item.year && (
+                                        <p><span className="font-semibold">Year:</span> {item.year}</p>
+                                    )}
+                                </div>
+
                                 <div className="flex flex-wrap gap-2">
                                     {item.tags.map((tag) => (
                                         <span
@@ -400,7 +482,7 @@ export default function GalleryAdminPage() {
                         ))}
                     </div>
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 }

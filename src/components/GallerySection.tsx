@@ -1,25 +1,18 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { galleryItems as staticGalleryItems } from "@/data/gallery";
+import { galleryItems as staticGalleryItems, type GalleryItem } from "@/data/gallery";
 import { db } from "@/lib/firebase";
 import { collection, query, orderBy, onSnapshot } from "firebase/firestore";
 
-interface GalleryItem {
-    id: string;
-    imageUrl?: string;
-    title?: string;
-    caption: string;
-    tags: string[];
-}
-
 export default function GallerySection() {
     const [items, setItems] = useState<GalleryItem[]>(staticGalleryItems);
-    const [selectedTag, setSelectedTag] = useState<string | null>(null);
+    const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [useFirebase, setUseFirebase] = useState(false);
     const [lightboxOpen, setLightboxOpen] = useState(false);
     const [selectedImage, setSelectedImage] = useState<GalleryItem | null>(null);
+    const [isFilterTransitioning, setIsFilterTransitioning] = useState(false);
 
     const AVAILABLE_REGIONS = ['Bangkalan', 'Sampang', 'Pamekasan', 'Sumenep'];
 
@@ -49,15 +42,33 @@ export default function GallerySection() {
         }
     }, []);
 
-    // Get only region tags that are in the available list
-    const regionTags = AVAILABLE_REGIONS.filter(region =>
-        items.some(item => item.tags.includes(region))
-    );
-
-    // Filter items
-    const filteredItems = selectedTag
-        ? items.filter((item) => item.tags.includes(selectedTag))
+    // Filter items by region
+    const filteredItems = selectedRegion
+        ? items.filter((item) => {
+            // Prioritas 1: Check tags array (Firebase structure)
+            if (item.tags && Array.isArray(item.tags)) {
+                return item.tags.includes(selectedRegion);
+            }
+            // Prioritas 2: Check region field (enriched data)
+            if (item.region) {
+                return item.region === selectedRegion;
+            }
+            return false;
+        })
         : items;
+
+    // Get featured item (first item marked as featured or first item in list)
+    const featuredItem = items.find(item => item.isFeatured) || items[0];
+    const regularItems = filteredItems.filter(item => item.id !== featuredItem?.id);
+
+    // Handle filter change with transition
+    const handleRegionChange = (region: string | null) => {
+        setIsFilterTransitioning(true);
+        setTimeout(() => {
+            setSelectedRegion(region);
+            setIsFilterTransitioning(false);
+        }, 150);
+    };
 
     // Handle image click
     const handleImageClick = (item: GalleryItem) => {
@@ -65,17 +76,15 @@ export default function GallerySection() {
         setLightboxOpen(true);
     };
 
-    // Handle download - menggunakan metode langsung untuk menghindari CORS
+    // Handle download
     const handleDownload = () => {
         if (!selectedImage?.imageUrl) return;
 
         try {
-            // Extract filename from title or use default
             const filename = selectedImage.title
                 ? `${selectedImage.title.replace(/[^a-zA-Z0-9]/g, '_')}.jpg`
                 : 'tongtong-madura-gallery.jpg';
 
-            // Method 1: Try to download directly with fetch
             fetch(selectedImage.imageUrl, { mode: 'cors' })
                 .then(response => {
                     if (!response.ok) throw new Error('Fetch failed');
@@ -92,14 +101,10 @@ export default function GallerySection() {
                     window.URL.revokeObjectURL(url);
                 })
                 .catch(() => {
-                    // Method 2: Fallback - open in new tab
-                    // Firebase Storage akan otomatis download jika dibuka langsung
-                    console.log('Using fallback download method (opening in new tab)');
                     window.open(selectedImage.imageUrl, '_blank');
                 });
         } catch (error) {
             console.error('Error downloading image:', error);
-            // Fallback - open in new tab
             window.open(selectedImage.imageUrl, '_blank');
         }
     };
@@ -118,104 +123,180 @@ export default function GallerySection() {
     }, [lightboxOpen]);
 
     return (
-        <div className="animate-fadeIn space-y-6">
+        <div className="animate-fadeIn space-y-8">
             {/* Intro */}
-            <div className="text-center space-y-3 max-w-2xl mx-auto">
-                <h2 className="text-2xl md:text-3xl font-bold flex items-center justify-center gap-3 text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.6)]">
-                    <span>📸</span>
+            <div className="text-center space-y-2 max-w-2xl mx-auto">
+                <h2 className="text-3xl md:text-4xl font-bold flex items-center justify-center gap-3 text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.6)]">
+                    <span className="text-4xl">📸</span>
                     <span>Galeri Visual</span>
                 </h2>
+                <p className="text-sm text-redBrown-200/90">
+                    Lihat warna dan bentuk Tong-Tong sebelum kamu baca ceritanya.
+                </p>
             </div>
 
-            {/* Tag Filter */}
-            <div className="flex flex-wrap justify-center gap-2">
+            {/* Region Filter Chips */}
+            <div className="flex flex-wrap justify-center gap-3">
                 <button
-                    onClick={() => setSelectedTag(null)}
-                    className={`px-4 py-2 rounded-full text-xs font-semibold transition-all duration-300 shadow-lg ${selectedTag === null
-                        ? "bg-linear-to-r from-amber-400 to-amber-500 text-redBrown-950 shadow-amber-400/50 scale-105 border-2 border-amber-300"
-                        : "bg-slate-700/80 text-white hover:bg-slate-600 border-2 border-slate-600"
-                        }`}
+                    onClick={() => handleRegionChange(null)}
+                    className={`
+                        px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300 shadow-lg
+                        ${selectedRegion === null
+                            ? "bg-linear-to-r from-redBrown-500 to-redBrown-600 text-white border-2 border-maduraGold shadow-maduraGold/50 scale-105"
+                            : "bg-redBrown-800/60 text-redBrown-200 hover:bg-redBrown-700/80 border-2 border-redBrown-700 hover:scale-105"
+                        }
+                    `}
                 >
                     Semua
                 </button>
-                {regionTags.map((tag) => (
+                {AVAILABLE_REGIONS.map((region) => (
                     <button
-                        key={tag}
-                        onClick={() => setSelectedTag(tag)}
-                        className={`px-4 py-2 rounded-full text-xs font-semibold transition-all duration-300 shadow-lg ${selectedTag === tag
-                            ? "bg-linear-to-r from-amber-400 to-amber-500 text-redBrown-950 shadow-amber-400/50 scale-105 border-2 border-amber-300"
-                            : "bg-slate-700/80 text-white hover:bg-slate-600 border-2 border-slate-600"
-                            }`}
+                        key={region}
+                        onClick={() => handleRegionChange(region)}
+                        className={`
+                            px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300 shadow-lg
+                            ${selectedRegion === region
+                                ? "bg-linear-to-r from-redBrown-500 to-redBrown-600 text-white border-2 border-maduraGold shadow-maduraGold/50 scale-105"
+                                : "bg-redBrown-800/60 text-redBrown-200 hover:bg-redBrown-700/80 border-2 border-redBrown-700 hover:scale-105"
+                            }
+                        `}
                     >
-                        {tag}
+                        {region}
                     </button>
                 ))}
             </div>
 
-            {/* Gallery Grid - Preserve original aspect ratios */}
-            <div className="columns-1 sm:columns-2 lg:columns-3 gap-5 max-w-6xl mx-auto space-y-5">
-                {filteredItems.map((item, index) => (
+            {/* Featured Image Card */}
+            {featuredItem && !selectedRegion && (
+                <div
+                    className="group relative w-full max-w-4xl mx-auto rounded-3xl overflow-hidden border-2 border-maduraGold/50 shadow-2xl shadow-maduraGold/20 cursor-pointer animate-slideUp"
+                    onClick={() => handleImageClick(featuredItem)}
+                >
+                    {/* Image */}
+                    <div className="relative aspect-21/9 overflow-hidden">
+                        {featuredItem.imageUrl ? (
+                            <img
+                                src={featuredItem.imageUrl}
+                                alt={featuredItem.title}
+                                className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
+                            />
+                        ) : (
+                            <div className="w-full h-full bg-linear-to-br from-redBrown-800 via-redBrown-900 to-redBrown-950 flex items-center justify-center">
+                                <span className="text-8xl opacity-30">🥁</span>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Gradient Overlay (always visible but enhanced on hover) */}
+                    <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/30 to-transparent group-hover:from-black/90 transition-all duration-300">
+                        <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 space-y-2">
+                            <div className="flex items-center gap-2 mb-2">
+                                <span className="px-3 py-1 rounded-full bg-maduraGold text-redBrown-950 text-xs font-bold">FEATURED</span>
+                                {featuredItem.region && (
+                                    <span className="px-3 py-1 rounded-full bg-redBrown-700/80 backdrop-blur-sm text-white text-xs font-semibold">
+                                        {featuredItem.region}
+                                    </span>
+                                )}
+                            </div>
+                            <h3 className="text-2xl md:text-3xl font-bold text-white">{featuredItem.title}</h3>
+                            {(featuredItem.description || featuredItem.caption) && (
+                                <p className="text-sm md:text-base text-white/90 max-w-2xl">
+                                    {featuredItem.description || featuredItem.caption}
+                                </p>
+                            )}
+                            {featuredItem.year && (
+                                <p className="text-xs text-white/70">{featuredItem.year}</p>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Gallery Grid - Pinterest Masonry Style */}
+            <div
+                className={`
+                    columns-1 md:columns-2 lg:columns-3 gap-6 max-w-6xl mx-auto space-y-6
+                    transition-opacity duration-300
+                    ${isFilterTransitioning ? 'opacity-0' : 'opacity-100'}
+                `}
+            >
+                {regularItems.map((item, index) => (
                     <div
                         key={item.id}
                         onClick={() => handleImageClick(item)}
-                        className="group relative rounded-2xl overflow-hidden border-2 border-redBrown-800/50 bg-linear-to-br from-redBrown-900 to-redBrown-950 hover:border-white/50 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-white/20 cursor-pointer break-inside-avoid"
+                        className="group relative rounded-2xl overflow-hidden border-2 border-redBrown-700/50 bg-linear-to-br from-redBrown-900 to-redBrown-950 hover:border-maduraGold/70 transition-all duration-300 hover:shadow-2xl hover:shadow-maduraGold/20 cursor-pointer animate-slideUp break-inside-avoid mb-6"
                         style={{
                             animationDelay: `${index * 50}ms`,
                         }}
                     >
-                        {/* Image with original aspect ratio */}
-                        {useFirebase && item.imageUrl ? (
-                            <img
-                                src={item.imageUrl}
-                                alt={item.title || item.caption}
-                                className="w-full h-auto object-cover"
-                                loading="lazy"
-                            />
-                        ) : (
-                            <div className="w-full aspect-square bg-linear-to-br from-redBrown-800/80 via-redBrown-900/80 to-redBrown-950/80 flex items-center justify-center">
-                                <span className="text-5xl opacity-40">🥁</span>
-                            </div>
-                        )}
+                        {/* Image - Natural Size */}
+                        <div className="relative overflow-hidden">
+                            {item.imageUrl ? (
+                                <img
+                                    src={item.imageUrl}
+                                    alt={item.title}
+                                    className="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-250"
+                                    loading="lazy"
+                                />
+                            ) : (
+                                <div className="w-full aspect-square bg-linear-to-br from-redBrown-800 via-redBrown-900 to-redBrown-950 flex items-center justify-center">
+                                    <span className="text-6xl opacity-30">🥁</span>
+                                </div>
+                            )}
+                        </div>
 
-                        {/* Overlay on hover */}
-                        <div className="absolute inset-0 bg-linear-to-t from-redBrown-950/95 via-redBrown-900/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
-                            <p className="text-xs md:text-sm text-white leading-relaxed font-medium">
-                                {item.caption}
-                            </p>
-                            <div className="flex flex-wrap gap-1.5 mt-2">
-                                {item.tags.map((tag) => (
-                                    <span
-                                        key={tag}
-                                        className="px-2 py-1 rounded-full bg-amber-400/90 border-2 border-amber-300 text-[10px] text-redBrown-950 font-bold backdrop-blur-sm shadow-lg"
-                                    >
-                                        {tag}
-                                    </span>
-                                ))}
-                            </div>
+                        {/* Hover Overlay */}
+                        <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-250 flex flex-col justify-end p-5">
+                            <h3 className="text-lg font-bold text-white mb-1">{item.title}</h3>
+                            {item.region && (
+                                <p className="text-sm text-maduraGold font-semibold mb-1">{item.region}</p>
+                            )}
+                            {item.year && (
+                                <p className="text-xs text-white/70">{item.year}</p>
+                            )}
+                        </div>
+
+                        {/* Mobile Info (always visible) - Hidden on desktop */}
+                        <div className="md:hidden absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/90 to-transparent p-4">
+                            <h3 className="text-sm font-bold text-white">{item.title}</h3>
+                            {item.region && (
+                                <p className="text-xs text-maduraGold font-semibold">{item.region}</p>
+                            )}
                         </div>
                     </div>
                 ))}
             </div>
 
             {filteredItems.length === 0 && (
-                <div className="text-center py-12">
-                    <p className="text-redBrown-300">Nggak ada foto untuk tag ini.</p>
+                <div className="text-center py-16 animate-fadeIn">
+                    <p className="text-lg text-redBrown-300">Nggak ada foto untuk daerah ini.</p>
                 </div>
             )}
 
-            {/* Lightbox Modal - Fit viewport dengan website scrollable */}
+            {/* Lightbox Modal */}
             {lightboxOpen && selectedImage && (
                 <div
-                    className="fixed inset-0 z-50 bg-black/97 flex items-center justify-center p-4 animate-fadeIn"
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fadeIn"
+                    style={{
+                        background: selectedImage.imageUrl
+                            ? `linear-gradient(rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 0.95)), url(${selectedImage.imageUrl})`
+                            : 'rgba(0, 0, 0, 0.97)',
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                        backgroundBlendMode: 'darken'
+                    }}
                     onClick={() => setLightboxOpen(false)}
                     suppressHydrationWarning
                 >
-                    {/* Floating Controls - Fixed position */}
+                    {/* Floating Controls */}
                     <div className="fixed top-6 right-6 flex gap-3 z-20">
                         {/* Download Button */}
-                        {useFirebase && selectedImage.imageUrl && (
+                        {selectedImage.imageUrl && (
                             <button
-                                onClick={handleDownload}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleDownload();
+                                }}
                                 className="text-white/80 hover:text-white transition-all w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 backdrop-blur-sm"
                                 aria-label="Download"
                                 title="Download gambar"
@@ -228,7 +309,10 @@ export default function GallerySection() {
 
                         {/* Close Button */}
                         <button
-                            onClick={() => setLightboxOpen(false)}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setLightboxOpen(false);
+                            }}
                             className="text-white/80 hover:text-white transition-colors w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 backdrop-blur-sm text-2xl"
                             aria-label="Close"
                         >
@@ -236,15 +320,15 @@ export default function GallerySection() {
                         </button>
                     </div>
 
-                    {/* Image Container - Fit viewport */}
+                    {/* Image Container */}
                     <div
                         className="relative max-w-[90vw] max-h-[90vh] flex items-center justify-center"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        {useFirebase && selectedImage.imageUrl ? (
+                        {selectedImage.imageUrl ? (
                             <img
                                 src={selectedImage.imageUrl}
-                                alt={selectedImage.title || selectedImage.caption}
+                                alt={selectedImage.title || selectedImage.description || "Gallery image"}
                                 className="max-w-full max-h-[90vh] w-auto h-auto object-contain rounded-lg shadow-2xl"
                             />
                         ) : (
@@ -254,12 +338,19 @@ export default function GallerySection() {
                         )}
                     </div>
 
-                    {/* Caption - Bottom overlay */}
-                    {selectedImage.caption && (
+                    {/* Info - Bottom overlay */}
+                    {(selectedImage.title || selectedImage.description || selectedImage.caption) && (
                         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 max-w-2xl px-4">
-                            <p className="text-center text-white/80 text-sm bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full">
-                                {selectedImage.caption}
-                            </p>
+                            <div className="text-center bg-black/70 backdrop-blur-md px-6 py-3 rounded-2xl border border-white/10">
+                                {selectedImage.title && (
+                                    <h3 className="text-white font-bold text-lg mb-1">{selectedImage.title}</h3>
+                                )}
+                                {(selectedImage.description || selectedImage.caption) && (
+                                    <p className="text-white/80 text-sm">
+                                        {selectedImage.description || selectedImage.caption}
+                                    </p>
+                                )}
+                            </div>
                         </div>
                     )}
                 </div>

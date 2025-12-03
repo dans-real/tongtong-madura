@@ -3,7 +3,6 @@ import Link from "next/link";
 const navItems = [
     { href: "/", label: "Home" },
     { href: "/peta", label: "Peta" },
-    { href: "/quiz", label: "Kuis" },
 ];
 
 export default function Navbar() {

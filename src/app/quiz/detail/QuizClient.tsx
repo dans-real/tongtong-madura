@@ -151,6 +151,17 @@ export default function QuizClient({ quiz }: { quiz: Quiz }) {
     return (
         <div className="min-h-screen bg-redBrown-950 px-4 py-8 md:py-12">
             <div className="max-w-3xl mx-auto space-y-6">
+                {/* Back Button */}
+                <div className="flex justify-start">
+                    <Link
+                        href="/?tab=kuis"
+                        className="flex items-center gap-2 px-4 py-2 bg-redBrown-800 text-white rounded-lg hover:bg-redBrown-700 border-2 border-redBrown-600 transition-all"
+                    >
+                        <span>←</span>
+                        <span>Kembali ke Quiz</span>
+                    </Link>
+                </div>
+
                 {/* Header */}
                 <div className="text-center space-y-3">
                     <h1 className="text-2xl md:text-3xl font-bold text-white">{quiz.title}</h1>

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import GallerySection from "@/components/GallerySection";
 import JelajahSection from "@/components/JelajahSection";
 import KuisSection from "@/components/KuisSection";
@@ -8,7 +9,16 @@ import KuisSection from "@/components/KuisSection";
 type TabType = "galeri" | "jelajah" | "kuis";
 
 export default function HomePage() {
+    const searchParams = useSearchParams();
+    const tabParam = searchParams.get('tab');
     const [activeTab, setActiveTab] = useState<TabType>("galeri");
+
+    // Set active tab based on URL parameter
+    useEffect(() => {
+        if (tabParam === 'kuis' || tabParam === 'jelajah' || tabParam === 'galeri') {
+            setActiveTab(tabParam as TabType);
+        }
+    }, [tabParam]);
 
     return (
         <div className="space-y-8">

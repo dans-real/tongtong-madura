@@ -206,12 +206,14 @@ export default function GalleryAdminPage() {
                     caption,
                     tags: selectedRegions,
                     description: description || caption,
-                    region: primaryRegion || (selectedRegions.length === 1 ? selectedRegions[0] : undefined),
-                    mood: mood || undefined,
-                    year: year || undefined,
                     isFeatured: isFeatured,
                     updatedAt: Timestamp.now()
                 };
+
+                // Only add optional fields if they have values
+                if (primaryRegion) updateData.region = primaryRegion;
+                if (mood) updateData.mood = mood;
+                if (year) updateData.year = year;
 
                 if (imageFile) {
                     updateData.imageUrl = finalImageUrl;
@@ -220,20 +222,24 @@ export default function GalleryAdminPage() {
                 await updateDoc(docRef, updateData);
                 alert('Gallery item updated!');
             } else {
-                // Create new item
-                await addDoc(collection(db, 'gallery'), {
+                // Create new item - only include defined fields
+                const newItemData: any = {
                     imageUrl: finalImageUrl,
                     title,
                     caption,
                     description: description || caption,
                     tags: selectedRegions,
-                    region: primaryRegion || (selectedRegions.length === 1 ? selectedRegions[0] : undefined),
-                    mood: mood || undefined,
-                    year: year || undefined,
                     isFeatured: isFeatured,
                     createdAt: Timestamp.now(),
                     updatedAt: Timestamp.now()
-                });
+                };
+
+                // Only add optional fields if they have values
+                if (primaryRegion) newItemData.region = primaryRegion;
+                if (mood) newItemData.mood = mood;
+                if (year) newItemData.year = year;
+
+                await addDoc(collection(db, 'gallery'), newItemData);
                 alert('Gallery item added!');
             }
             resetForm();

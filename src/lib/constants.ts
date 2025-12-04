@@ -1,7 +1,6 @@
-// For custom domain, replace avec your domain (e.g., https://tongtong-madura.com)
-// For now using GitHub Pages URL (change this after custom domain is set up)
+// Custom domain for production
 export const BASE_URL = process.env.NODE_ENV === "production"
-    ? "https://dans-real.github.io"
+    ? "https://tongtongmadura.web.id"
     : "http://localhost:3000";
 
 export const SITE_NAME = "Tong-Tong Madura Hub";

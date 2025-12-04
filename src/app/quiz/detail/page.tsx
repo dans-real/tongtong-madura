@@ -4,15 +4,8 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { db } from "@/lib/firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
+import type { Quiz } from "@/data/quizzes";
 import QuizClient from "./QuizClient";
-
-interface Quiz {
-    id: string;
-    slug: string;
-    title: string;
-    level: 'basic' | 'medium' | 'advanced';
-    questions: any[];
-}
 
 export default function QuizDetailPage() {
     const searchParams = useSearchParams();
@@ -36,7 +29,12 @@ export default function QuizDetailPage() {
 
                 if (!snapshot.empty) {
                     const doc = snapshot.docs[0];
-                    setQuiz({ id: doc.id, ...doc.data() } as Quiz);
+                    const data = doc.data();
+                    setQuiz({
+                        ...data,
+                        id: doc.id,
+                        questionCount: data.questions?.length || 0
+                    } as any as Quiz);
                 } else {
                     setQuiz(null);
                 }

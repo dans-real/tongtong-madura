@@ -1,39 +1,39 @@
 # Deploy script for GitHub Pages with custom domain
 # This script builds the Next.js app and prepares it for GitHub Pages
 
-Write-Host "🚀 Starting deployment process..." -ForegroundColor Cyan
+Write-Host "Starting deployment process..." -ForegroundColor Cyan
 
 # Step 1: Clean previous builds
-Write-Host "`n📦 Cleaning previous builds..." -ForegroundColor Yellow
+Write-Host "`nCleaning previous builds..." -ForegroundColor Yellow
 if (Test-Path "out") { Remove-Item -Recurse -Force "out" }
 if (Test-Path "docs") { Remove-Item -Recurse -Force "docs" }
 
 # Step 2: Build the Next.js app
-Write-Host "`n🔨 Building Next.js app..." -ForegroundColor Yellow
+Write-Host "`nBuilding Next.js app..." -ForegroundColor Yellow
 npm run build
 
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "❌ Build failed! Please fix errors above." -ForegroundColor Red
+    Write-Host "Build failed! Please fix errors above." -ForegroundColor Red
     exit 1
 }
 
 # Step 3: Copy output to docs folder
-Write-Host "`n📁 Copying build to docs folder..." -ForegroundColor Yellow
+Write-Host "`nCopying build to docs folder..." -ForegroundColor Yellow
 Copy-Item -Path "out" -Destination "docs" -Recurse
 
-# Step 4: Create CNAME file (REPLACE with your actual domain)
-Write-Host "`n🌐 Creating CNAME file..." -ForegroundColor Yellow
-$customDomain = Read-Host "Enter your custom domain (e.g., tongtong-madura.com) or press Enter to skip"
-
-if ($customDomain) {
-    Set-Content -Path "docs/CNAME" -Value $customDomain
-    Write-Host "✅ CNAME file created with domain: $customDomain" -ForegroundColor Green
+# Step 4: Check CNAME file
+Write-Host "`nChecking CNAME file..." -ForegroundColor Yellow
+if (Test-Path "docs/CNAME") {
+    $existingDomain = Get-Content "docs/CNAME"
+    Write-Host "CNAME file exists with domain: $existingDomain" -ForegroundColor Green
 } else {
-    Write-Host "⚠️  CNAME file not created. Add it manually if using custom domain." -ForegroundColor Yellow
+    Write-Host "CNAME file not found. Creating..." -ForegroundColor Yellow
+    Set-Content -Path "docs/CNAME" -Value "tongtongmadura.web.id"
+    Write-Host "CNAME file created with domain: tongtongmadura.web.id" -ForegroundColor Green
 }
 
 # Step 5: Verify critical files exist
-Write-Host "`n✅ Verifying build..." -ForegroundColor Yellow
+Write-Host "`nVerifying build..." -ForegroundColor Yellow
 $criticalFiles = @(
     "docs/index.html",
     "docs/_next/static/chunks"
@@ -41,15 +41,15 @@ $criticalFiles = @(
 
 foreach ($file in $criticalFiles) {
     if (Test-Path $file) {
-        Write-Host "   ✓ $file exists" -ForegroundColor Green
+        Write-Host "   OK: $file exists" -ForegroundColor Green
     } else {
-        Write-Host "   ✗ $file missing!" -ForegroundColor Red
+        Write-Host "   ERROR: $file missing!" -ForegroundColor Red
     }
 }
 
-Write-Host "`n🎉 Build complete! Ready to deploy." -ForegroundColor Cyan
+Write-Host "`nBuild complete! Ready to deploy." -ForegroundColor Cyan
 Write-Host "`nNext steps:" -ForegroundColor Yellow
-Write-Host "1. git add docs/" -ForegroundColor White
+Write-Host "1. git add ." -ForegroundColor White
 Write-Host "2. git commit -m 'Deploy to GitHub Pages'" -ForegroundColor White
 Write-Host "3. git push origin main" -ForegroundColor White
 Write-Host "`n4. Go to GitHub Settings > Pages" -ForegroundColor White

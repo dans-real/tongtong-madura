@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
             allow: "/",
             disallow: ["/api/", "/_next/"],
         },
-        sitemap: "https://glennn-droid.github.io/tongtong-madura/sitemap.xml",
+        sitemap: "https://tongtongmadura.web.id/sitemap.xml",
     };
 }

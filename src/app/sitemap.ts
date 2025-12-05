@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 
 export const dynamic = "force-static";
 
-const baseUrl = "https://dans-real.github.io/tongtong-madura";
+const baseUrl = "https://tongtongmadura.web.id";
 
 export default function sitemap(): MetadataRoute.Sitemap {
     // Static pages only - dynamic routes loaded from Firebase

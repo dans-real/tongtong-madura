@@ -3,4 +3,4 @@ Allow: /
 Disallow: /api/
 Disallow: /_next/
 
-Sitemap: https://glennn-droid.github.io/tongtong-madura/sitemap.xml
+Sitemap: https://tongtongmadura.web.id/sitemap.xml

@@ -8,7 +8,6 @@ import { db } from "@/lib/firebase";
 import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 
 export default function JelajahSection() {
-    const basePath = process.env.NODE_ENV === "production" ? "/tongtong-madura" : "";
     const [topics, setTopics] = useState<ExploreTopic[]>(staticTopics);
     const [loading, setLoading] = useState(true);
 
@@ -60,7 +59,7 @@ export default function JelajahSection() {
                         {/* Map Image */}
                         <div className="relative w-full aspect-4/3 rounded-2xl overflow-hidden border-2 border-redBrown-600/50 shadow-lg">
                             <Image
-                                src={`${basePath}/madura-map.png`}
+                                src="/madura-map.png"
                                 alt="Peta Madura"
                                 fill
                                 className="object-contain bg-redBrown-950/50 p-4"

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generate Favicon</title>
+</head>
+<body>
+    <h2>TT Logo Favicon Generator</h2>
+    <canvas id="canvas" width="192" height="192" style="border: 1px solid black;"></canvas>
+    <br><br>
+    <button onclick="downloadPNG()">Download as PNG (192x192)</button>
+    <button onclick="downloadICO()">Download as favicon.ico</button>
+    
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Create gradient background (amber gradient)
+        const gradient = ctx.createLinearGradient(0, 0, 192, 192);
+        gradient.addColorStop(0, '#fbbf24');    // amber-400
+        gradient.addColorStop(0.5, '#fcd34d');  // amber-300
+        gradient.addColorStop(1, '#fef08a');    // yellow-200
+        
+        // Draw rounded rectangle background
+        const radius = 38; // Proportional to 24/128 * 192
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.roundRect(6, 6, 180, 180, radius);
+        ctx.fill();
+        
+        // Draw border
+        ctx.strokeStyle = '#fef3c7'; // amber-100
+        ctx.lineWidth = 6;
+        ctx.stroke();
+        
+        // Draw shadow border
+        ctx.strokeStyle = 'rgba(245, 158, 11, 0.3)'; // amber-500 with opacity
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        
+        // Draw TT text
+        ctx.fillStyle = '#7f2d1f'; // redBrown-800
+        ctx.font = 'bold 78px Arial, sans-serif'; // Proportional to 52/128 * 192
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('TT', 96, 105);
+        
+        function downloadPNG() {
+            const link = document.createElement('a');
+            link.download = 'favicon-192x192.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+        
+        function downloadICO() {
+            // For ICO, we'll download the PNG and user needs to convert it
+            // using an online tool or imagemagick
+            alert('Download the PNG first, then convert it to .ico using:\n' +
+                  '1. Online tool: https://cloudconvert.com/png-to-ico\n' +
+                  '2. Or use ImageMagick: magick convert favicon-192x192.png -define icon:auto-resize=256,128,96,64,48,32,16 favicon.ico');
+            downloadPNG();
+        }
+    </script>
+</body>
+</html>

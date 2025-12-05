@@ -3,13 +3,11 @@
 import Image from "next/image";
 
 export default function MapMadura() {
-    const basePath = process.env.NODE_ENV === "production" ? "/tongtong-madura" : "";
-
     return (
         <div className="relative w-full aspect-video rounded-3xl border-2 border-redBrown-700/50 overflow-hidden shadow-2xl shadow-redBrown-950/50 bg-linear-to-br from-redBrown-900 via-redBrown-800 to-redBrown-900">
             {/* Foto map Madura */}
             <Image
-                src={`${basePath}/madura-map.png`}
+                src="/madura-map.png"
                 alt="Map of Madura showing Bangkalan, Sampang, Pamekasan, and Sumenep regions"
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 600px"

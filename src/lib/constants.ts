@@ -5,7 +5,7 @@ export const BASE_URL = process.env.NODE_ENV === "production"
 
 export const SITE_NAME = "Tong-Tong Madura";
 export const SITE_DESCRIPTION =
-    "Djaga Imbauan dan explore Tong-Tong culture in Madura";
+    "Explore and Play Quiz Tong-Tong culture vibes in Madura";
 
 export const SOCIAL_MEDIA = {
     github: "https://github.com/dans-real",

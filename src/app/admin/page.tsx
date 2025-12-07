@@ -26,6 +26,7 @@ interface GalleryItem {
 interface ExploreContent {
     id: string;
     title: string;
+    subJudul?: string;
     informasi: string;
     referensi: string;
     imageUrl?: string;
@@ -404,6 +405,15 @@ export default function AdminPage() {
                                                     )}
 
                                                     <div className="space-y-3">
+                                                        {/* Sub Judul */}
+                                                        {content.subJudul && (
+                                                            <div>
+                                                                <h4 className="text-sm font-semibold text-amber-400 mb-1">Sub Judul:</h4>
+                                                                <p className="text-base font-semibold text-emerald-400">
+                                                                    📌 {content.subJudul}
+                                                                </p>
+                                                            </div>
+                                                        )}
                                                         <div>
                                                             <h4 className="text-sm font-semibold text-emerald-400 mb-1">Informasi:</h4>
                                                             <p className="text-sm text-redBrown-300 line-clamp-3">

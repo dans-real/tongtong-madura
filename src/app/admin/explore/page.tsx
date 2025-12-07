@@ -349,7 +349,7 @@ export default function ExploreAdminPage() {
                                         </div>
 
                                         {/* Actions */}
-                                        <div className="flex gap-2">
+                                        <div className="flex gap-2 pt-2 border-t border-redBrown-700/50">
                                             <button
                                                 onClick={() => handleEdit(content)}
                                                 className="px-4 py-2 bg-emerald-500 text-white text-sm font-semibold rounded hover:bg-emerald-600 border-2 border-emerald-400"
@@ -360,7 +360,7 @@ export default function ExploreAdminPage() {
                                                 onClick={() => handleDelete(content.id)}
                                                 className="px-4 py-2 bg-red-600 text-white text-sm font-semibold rounded hover:bg-red-700 border-2 border-red-500"
                                             >
-                                                🗑️ Hapus
+                                                🗑️ Delete
                                             </button>
                                         </div>
                                     </div>

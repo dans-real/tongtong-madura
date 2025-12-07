@@ -21,6 +21,7 @@ interface ExploreContent {
     id: string;
     title: string;
     imageUrl: string;
+    subJudul?: string;
     informasi: string;
     referensi: string;
     createdAt: Timestamp;
@@ -38,6 +39,7 @@ export default function ExploreAdminPage() {
     const [imagePreview, setImagePreview] = useState('');
     const [imageUrl, setImageUrl] = useState('');
     const [title, setTitle] = useState('');
+    const [subJudul, setSubJudul] = useState('');
     const [informasi, setInformasi] = useState('');
     const [referensi, setReferensi] = useState('');
     const [isUploading, setIsUploading] = useState(false);
@@ -70,6 +72,7 @@ export default function ExploreAdminPage() {
         setImagePreview('');
         setImageUrl('');
         setTitle('');
+        setSubJudul('');
         setInformasi('');
         setReferensi('');
         setIsEditing(false);
@@ -153,6 +156,7 @@ export default function ExploreAdminPage() {
                 const docRef = doc(db, 'explore', editingId);
                 const updateData: any = {
                     title,
+                    subJudul,
                     informasi,
                     referensi,
                     updatedAt: Timestamp.now()
@@ -169,6 +173,7 @@ export default function ExploreAdminPage() {
                 await addDoc(collection(db, 'explore'), {
                     imageUrl: finalImageUrl,
                     title,
+                    subJudul,
                     informasi,
                     referensi,
                     createdAt: Timestamp.now(),
@@ -189,6 +194,7 @@ export default function ExploreAdminPage() {
         setImageUrl(content.imageUrl);
         setImagePreview(content.imageUrl);
         setTitle(content.title);
+        setSubJudul(content.subJudul || '');
         setInformasi(content.informasi);
         setReferensi(content.referensi);
         setIsEditing(true);
@@ -266,6 +272,21 @@ export default function ExploreAdminPage() {
                             />
                         </div>
 
+                        {/* Sub Judul */}
+                        <div>
+                            <label className="block text-sm font-medium text-amber-300 mb-2">
+                                Sub Judul (Opsional)
+                            </label>
+                            <input
+                                type="text"
+                                value={subJudul}
+                                onChange={(e) => setSubJudul(e.target.value)}
+                                className="w-full px-4 py-2 bg-redBrown-800 border-2 border-redBrown-600 rounded-lg text-white focus:border-emerald-400 focus:outline-none"
+                                placeholder="Contoh: Alat Musik Tradisional yang Unik"
+                            />
+                            <p className="text-xs text-redBrown-400 mt-1">💡 Sub judul akan ditampilkan dengan font lebih besar di dalam konten artikel</p>
+                        </div>
+
                         {/* Informasi */}
                         <div>
                             <label className="block text-sm font-medium text-amber-300 mb-2">
@@ -341,6 +362,9 @@ export default function ExploreAdminPage() {
                                     {/* Content */}
                                     <div className="flex-1 flex flex-col">
                                         <h3 className="text-xl font-bold text-white mb-2">{content.title}</h3>
+                                        {content.subJudul && (
+                                            <h4 className="text-base font-semibold text-emerald-400 mb-2">📌 {content.subJudul}</h4>
+                                        )}
                                         <p className="text-sm text-redBrown-300 line-clamp-3 mb-3 flex-1">
                                             {content.informasi}
                                         </p>

@@ -2,6 +2,7 @@ export type ExploreTopic = {
     id: string;
     title: string;
     imageUrl: string;
+    subJudul?: string;      // optional subtitle for highlighting content focus
     informasi: string;      // main content
     referensi: string;      // references/sources
 };

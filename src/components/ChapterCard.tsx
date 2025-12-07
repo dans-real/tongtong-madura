@@ -48,6 +48,16 @@ export default function ChapterCard({ topic, index }: ChapterCardProps) {
                     </div>
                 )}
 
+                {/* Sub Judul (if exists) */}
+                {topic.subJudul && (
+                    <div className="flex items-start gap-2">
+                        <span className="text-emerald-400 text-lg shrink-0">📌</span>
+                        <h4 className="text-base md:text-lg font-semibold text-emerald-400 leading-snug">
+                            {topic.subJudul}
+                        </h4>
+                    </div>
+                )}
+
                 {/* Preview (First 200 chars) */}
                 {!isExpanded && (
                     <p className="text-sm text-redBrown-200 leading-relaxed line-clamp-3">

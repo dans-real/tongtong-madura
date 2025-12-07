@@ -23,11 +23,15 @@ interface GalleryItem {
     tags: string[];
 }
 
+interface ContentSection {
+    subJudul: string;
+    informasi: string;
+}
+
 interface ExploreContent {
     id: string;
     title: string;
-    subJudul?: string;
-    informasi: string;
+    sections: ContentSection[];
     referensi: string;
     imageUrl?: string;
 }
@@ -405,21 +409,20 @@ export default function AdminPage() {
                                                     )}
 
                                                     <div className="space-y-3">
-                                                        {/* Sub Judul */}
-                                                        {content.subJudul && (
-                                                            <div>
-                                                                <h4 className="text-sm font-semibold text-amber-400 mb-1">Sub Judul:</h4>
-                                                                <p className="text-base font-semibold text-emerald-400">
-                                                                    📌 {content.subJudul}
-                                                                </p>
+                                                        {/* Sections */}
+                                                        {content.sections && content.sections.length > 0 && (
+                                                            <div className="space-y-2">
+                                                                <h4 className="text-sm font-semibold text-emerald-400 mb-1">Konten:</h4>
+                                                                {content.sections.map((section, idx) => (
+                                                                    <div key={idx} className="pl-3 border-l-2 border-emerald-500/30">
+                                                                        {section.subJudul && (
+                                                                            <p className="text-sm font-semibold text-amber-400">📌 {section.subJudul}</p>
+                                                                        )}
+                                                                        <p className="text-sm text-redBrown-300 line-clamp-2">{section.informasi}</p>
+                                                                    </div>
+                                                                ))}
                                                             </div>
                                                         )}
-                                                        <div>
-                                                            <h4 className="text-sm font-semibold text-emerald-400 mb-1">Informasi:</h4>
-                                                            <p className="text-sm text-redBrown-300 line-clamp-3">
-                                                                {content.informasi}
-                                                            </p>
-                                                        </div>
                                                         <div>
                                                             <h4 className="text-sm font-semibold text-emerald-400 mb-1">Referensi:</h4>
                                                             <p className="text-xs text-redBrown-400 line-clamp-2">
@@ -432,10 +435,16 @@ export default function AdminPage() {
                                             </div>
                                             <div className="flex gap-2 pt-2 border-t border-redBrown-700/50">
                                                 <button
+                                                    onClick={() => handleEdit('explore', content.id)}
+                                                    className="px-4 py-2 bg-emerald-500 text-white text-sm font-semibold rounded hover:bg-emerald-600 border-2 border-emerald-400"
+                                                >
+                                                    ✏️ Edit
+                                                </button>
+                                                <button
                                                     onClick={() => handleDelete('explore', content.id)}
                                                     className="px-4 py-2 bg-red-600 text-white text-sm font-semibold rounded hover:bg-red-700 border-2 border-red-500"
                                                 >
-                                                    Delete
+                                                    🗑️ Delete
                                                 </button>
                                             </div>
                                         </div>

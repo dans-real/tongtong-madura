@@ -1,10 +1,14 @@
+export type ContentSection = {
+    subJudul: string;
+    informasi: string;
+};
+
 export type ExploreTopic = {
     id: string;
     title: string;
     imageUrl: string;
-    subJudul?: string;      // optional subtitle for highlighting content focus
-    informasi: string;      // main content
-    referensi: string;      // references/sources
+    sections: ContentSection[];
+    referensi: string;
 };
 
 // Sample data - will be replaced by Firebase data in production

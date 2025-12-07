@@ -48,36 +48,44 @@ export default function ChapterCard({ topic, index }: ChapterCardProps) {
                     </div>
                 )}
 
-                {/* Sub Judul (if exists) */}
-                {topic.subJudul && (
-                    <div className="flex items-start gap-2">
-                        <span className="text-emerald-400 text-lg shrink-0">📌</span>
-                        <h4 className="text-base md:text-lg font-semibold text-emerald-400 leading-snug">
-                            {topic.subJudul}
-                        </h4>
+                {/* Preview - First Section */}
+                {!isExpanded && topic.sections && topic.sections.length > 0 && (
+                    <div>
+                        {topic.sections[0].subJudul && (
+                            <h4 className="text-base font-semibold text-emerald-400 mb-2 flex items-start gap-2">
+                                <span className="text-lg shrink-0">📌</span>
+                                {topic.sections[0].subJudul}
+                            </h4>
+                        )}
+                        <p className="text-sm text-redBrown-200 leading-relaxed line-clamp-3">
+                            {topic.sections[0].informasi.substring(0, 200)}...
+                        </p>
                     </div>
                 )}
 
-                {/* Preview (First 200 chars) */}
-                {!isExpanded && (
-                    <p className="text-sm text-redBrown-200 leading-relaxed line-clamp-3">
-                        {topic.informasi.substring(0, 200)}...
-                    </p>
-                )}
-
-                {/* Expanded Content */}
+                {/* Expanded Content - All Sections */}
                 <div
                     className={`
                         overflow-hidden transition-all duration-300
-                        ${isExpanded ? 'max-h-[3000px] opacity-100' : 'max-h-0 opacity-0'}
+                        ${isExpanded ? 'max-h-[5000px] opacity-100' : 'max-h-0 opacity-0'}
                     `}
                 >
                     {isExpanded && (
-                        <div className="space-y-4 animate-fadeIn">
-                            {/* Full Content */}
-                            <div className="text-sm text-redBrown-100 leading-relaxed whitespace-pre-line">
-                                {topic.informasi}
-                            </div>
+                        <div className="space-y-6 animate-fadeIn">
+                            {/* All Content Sections */}
+                            {topic.sections && topic.sections.map((section, idx) => (
+                                <div key={idx} className="space-y-2">
+                                    {section.subJudul && (
+                                        <h4 className="text-base md:text-lg font-bold text-emerald-400 flex items-start gap-2">
+                                            <span className="text-xl shrink-0">📌</span>
+                                            {section.subJudul}
+                                        </h4>
+                                    )}
+                                    <div className="text-sm text-redBrown-100 leading-relaxed whitespace-pre-line pl-7">
+                                        {section.informasi}
+                                    </div>
+                                </div>
+                            ))}
 
                             {/* References */}
                             {topic.referensi && (

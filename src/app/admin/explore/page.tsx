@@ -17,12 +17,16 @@ import {
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
+interface ContentSection {
+    subJudul: string;
+    informasi: string;
+}
+
 interface ExploreContent {
     id: string;
     title: string;
     imageUrl: string;
-    subJudul?: string;
-    informasi: string;
+    sections: ContentSection[];
     referensi: string;
     createdAt: Timestamp;
 }
@@ -39,8 +43,7 @@ export default function ExploreAdminPage() {
     const [imagePreview, setImagePreview] = useState('');
     const [imageUrl, setImageUrl] = useState('');
     const [title, setTitle] = useState('');
-    const [subJudul, setSubJudul] = useState('');
-    const [informasi, setInformasi] = useState('');
+    const [sections, setSections] = useState<ContentSection[]>([{ subJudul: '', informasi: '' }]);
     const [referensi, setReferensi] = useState('');
     const [isUploading, setIsUploading] = useState(false);
 
@@ -72,11 +75,26 @@ export default function ExploreAdminPage() {
         setImagePreview('');
         setImageUrl('');
         setTitle('');
-        setSubJudul('');
-        setInformasi('');
+        setSections([{ subJudul: '', informasi: '' }]);
         setReferensi('');
         setIsEditing(false);
         setEditingId(null);
+    };
+
+    const addSection = () => {
+        setSections([...sections, { subJudul: '', informasi: '' }]);
+    };
+
+    const removeSection = (index: number) => {
+        if (sections.length > 1) {
+            setSections(sections.filter((_, i) => i !== index));
+        }
+    };
+
+    const updateSection = (index: number, field: 'subJudul' | 'informasi', value: string) => {
+        const newSections = [...sections];
+        newSections[index][field] = value;
+        setSections(newSections);
     };
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -156,8 +174,7 @@ export default function ExploreAdminPage() {
                 const docRef = doc(db, 'explore', editingId);
                 const updateData: any = {
                     title,
-                    subJudul,
-                    informasi,
+                    sections,
                     referensi,
                     updatedAt: Timestamp.now()
                 };
@@ -173,8 +190,7 @@ export default function ExploreAdminPage() {
                 await addDoc(collection(db, 'explore'), {
                     imageUrl: finalImageUrl,
                     title,
-                    subJudul,
-                    informasi,
+                    sections,
                     referensi,
                     createdAt: Timestamp.now(),
                     updatedAt: Timestamp.now()
@@ -194,8 +210,7 @@ export default function ExploreAdminPage() {
         setImageUrl(content.imageUrl);
         setImagePreview(content.imageUrl);
         setTitle(content.title);
-        setSubJudul(content.subJudul || '');
-        setInformasi(content.informasi);
+        setSections(content.sections && content.sections.length > 0 ? content.sections : [{ subJudul: '', informasi: '' }]);
         setReferensi(content.referensi);
         setIsEditing(true);
         setEditingId(content.id);
@@ -272,34 +287,66 @@ export default function ExploreAdminPage() {
                             />
                         </div>
 
-                        {/* Sub Judul */}
-                        <div>
-                            <label className="block text-sm font-medium text-amber-300 mb-2">
-                                Sub Judul (Opsional)
-                            </label>
-                            <input
-                                type="text"
-                                value={subJudul}
-                                onChange={(e) => setSubJudul(e.target.value)}
-                                className="w-full px-4 py-2 bg-redBrown-800 border-2 border-redBrown-600 rounded-lg text-white focus:border-emerald-400 focus:outline-none"
-                                placeholder="Contoh: Alat Musik Tradisional yang Unik"
-                            />
-                            <p className="text-xs text-redBrown-400 mt-1">💡 Sub judul akan ditampilkan dengan font lebih besar di dalam konten artikel</p>
-                        </div>
+                        {/* Content Sections (Dynamic) */}
+                        <div className="space-y-4">
+                            <div className="flex items-center justify-between">
+                                <label className="block text-sm font-medium text-amber-300">
+                                    Konten Artikel (Sub Judul + Informasi)
+                                </label>
+                                <button
+                                    type="button"
+                                    onClick={addSection}
+                                    className="px-3 py-1.5 bg-emerald-500 text-white text-xs font-semibold rounded hover:bg-emerald-600 border-2 border-emerald-400"
+                                >
+                                    ➕ Tambah Section
+                                </button>
+                            </div>
 
-                        {/* Informasi */}
-                        <div>
-                            <label className="block text-sm font-medium text-amber-300 mb-2">
-                                Informasi (Konten Artikel) *
-                            </label>
-                            <textarea
-                                value={informasi}
-                                onChange={(e) => setInformasi(e.target.value)}
-                                required
-                                rows={12}
-                                className="w-full px-4 py-2 bg-redBrown-800 border-2 border-redBrown-600 rounded-lg text-white focus:border-emerald-400 focus:outline-none"
-                                placeholder="Tulis konten artikel lengkap di sini..."
-                            />
+                            {sections.map((section, index) => (
+                                <div key={index} className="p-4 bg-redBrown-800/50 border-2 border-redBrown-600/50 rounded-lg space-y-3">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <span className="text-sm font-semibold text-emerald-400">Section {index + 1}</span>
+                                        {sections.length > 1 && (
+                                            <button
+                                                type="button"
+                                                onClick={() => removeSection(index)}
+                                                className="px-2 py-1 bg-red-600 text-white text-xs font-semibold rounded hover:bg-red-700"
+                                            >
+                                                🗑️ Hapus
+                                            </button>
+                                        )}
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-xs font-medium text-amber-300 mb-1">
+                                            Sub Judul {index === 0 ? '*' : '(Opsional)'}
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={section.subJudul}
+                                            onChange={(e) => updateSection(index, 'subJudul', e.target.value)}
+                                            required={index === 0}
+                                            className="w-full px-3 py-2 bg-redBrown-800 border-2 border-redBrown-600 rounded-lg text-white text-sm focus:border-emerald-400 focus:outline-none"
+                                            placeholder={`Sub judul ${index + 1}`}
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-xs font-medium text-amber-300 mb-1">
+                                            Informasi {index === 0 ? '*' : '(Opsional)'}
+                                        </label>
+                                        <textarea
+                                            value={section.informasi}
+                                            onChange={(e) => updateSection(index, 'informasi', e.target.value)}
+                                            required={index === 0}
+                                            rows={6}
+                                            className="w-full px-3 py-2 bg-redBrown-800 border-2 border-redBrown-600 rounded-lg text-white text-sm focus:border-emerald-400 focus:outline-none"
+                                            placeholder={`Informasi untuk section ${index + 1}...`}
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                            <p className="text-xs text-redBrown-400">💡 Setiap section akan ditampilkan dengan sub judul yang menonjol diikuti informasinya</p>
                         </div>
 
                         {/* Referensi */}
@@ -361,13 +408,22 @@ export default function ExploreAdminPage() {
 
                                     {/* Content */}
                                     <div className="flex-1 flex flex-col">
-                                        <h3 className="text-xl font-bold text-white mb-2">{content.title}</h3>
-                                        {content.subJudul && (
-                                            <h4 className="text-base font-semibold text-emerald-400 mb-2">📌 {content.subJudul}</h4>
+                                        <h3 className="text-xl font-bold text-white mb-3">{content.title}</h3>
+
+                                        {/* Sections Preview */}
+                                        {content.sections && content.sections.length > 0 && (
+                                            <div className="space-y-2 mb-3">
+                                                {content.sections.map((section, idx) => (
+                                                    <div key={idx} className="text-sm">
+                                                        {section.subJudul && (
+                                                            <h4 className="font-semibold text-emerald-400">📌 {section.subJudul}</h4>
+                                                        )}
+                                                        <p className="text-redBrown-300 line-clamp-2">{section.informasi}</p>
+                                                    </div>
+                                                ))}
+                                            </div>
                                         )}
-                                        <p className="text-sm text-redBrown-300 line-clamp-3 mb-3 flex-1">
-                                            {content.informasi}
-                                        </p>
+
                                         <div className="text-xs text-redBrown-400 mb-3">
                                             <strong>Referensi:</strong> {content.referensi.substring(0, 100)}...
                                         </div>

@@ -26,7 +26,10 @@ export default function HomePage() {
             <section className="text-center space-y-6 pt-4 pb-2">
                 <div className="space-y-3 max-w-3xl mx-auto">
                     <h1 className="text-3xl md:text-5xl font-bold leading-tight">
-                        <span className="block text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)]">
+                        <span className="block text-amber-300 drop-shadow-[0_4px_12px_rgba(251,191,36,0.6)] text-4xl md:text-6xl font-black tracking-tight">
+                            TONGMA
+                        </span>
+                        <span className="block text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)] text-xl md:text-3xl mt-1">
                             Tong-Tong Madura
                         </span>
                         <span className="block text-2xl md:text-3xl text-white/90 mt-2">
